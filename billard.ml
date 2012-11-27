@@ -66,8 +66,11 @@ b.a.y <- 0.;;
 (* Fait avancer les boules durant l'intervalle de temps dt, 
 selon leur vitesse, sans prendre en compte les collisions. *)
 
-let contact b1 b2 = distance b1 b2 < (b1.r +. b2.r);;
+let contact b1 b2 = distance b1 b2 <= (b1.r +. b2.r);;
 (* Détermine si oui ou non deux boules sont en contact strict. *)
+
+let contact_triple b1 b2 b3 = contact b1 b2 && contact b2 b3 && contact b1 b3;;
+(* Détermine si trois boules sont toutes en contact entre elles. *)
 
 let separe b1 b2 = 
   let bary = mult_scalaire (1./.(b1.r +. b2.r)) (add_vect (mult_scalaire b2.r b1.o) (mult_scalaire b1.r b2.o)) in
@@ -161,14 +164,14 @@ for i = 0 to n-1 do
 done;
 for i = 1 to n-1 do for j = 0 to i-1 do
   if contact m.(i) m.(j) 
-  then
-    let temp = ref false in
+  then begin
+    let test_contact = ref false in
     for k = j+1 to i-1 do
-      if contact m.(i) m.(k)
+      if contact_triple m.(i) m.(j) m.(k)
       then
-(	collision_triple m.(i) m.(j) m.(k) ; temp <- true )
-	 done
-if !temp then collision m.(i) m.(j) 
+(	collision_triple m.(i) m.(j) m.(k) ; test_contact := true )
+    done; 
+    if not !test_contact then collision m.(i) m.(j) end
   (* On fait rebondir les boules qui s'entrechoquent. *)
 done done;
 let n1 = Array.length bill.trous in
@@ -316,7 +319,7 @@ let m = make_billard l;;
 
 (*while m.n > 0 do*)
 m.boules.(21).o.x <- 120.;
-m.boules.(21).o.y <- 230.;;
+m.boules.(21).o.y <- (float_of_int (Graphics.size_y())) /. 2.;;
 draw_billard m;;
 
 m.boules.(21).v.x <- 500.;
