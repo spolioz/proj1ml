@@ -74,7 +74,6 @@ let separe b1 b2 =
   let u = vect_dir b1 b2 in
 b1.o <- add_vect bary (mult_scalaire (-. b1.r) u);
 b2.o <- add_vect bary (mult_scalaire (b2.r) u);;
-(* Permet de séparer deux boules qui s'intersectent *)
 
 let collision b1 b2 = 
 separe b1 b2;
@@ -306,5 +305,28 @@ launch m done;;
 type surface = float * float * float * float;;
 (* Une surface est un rectangle repéré par ses 
 abscisses et ordonnées minimales et maximales. *)
-type quadtree = F of surface*boule list | N of quadtree*quadtree*quadtree*quadtree;;
+type quadtree = F of surface*(boule list) | N of quadtree*quadtree*quadtree*quadtree;;
 
+let rec quadtree_create n =
+  let xm = float_of_int (Graphics.size_x())
+  and ym = float_of_int (Graphics.size_y()) in
+  let rec aux n xmin xmax ymin ymax = 
+    if n = 0 then F(0., 0., xm, ym)
+    else let x1 = (xmin +. xmax)/.2. and y1 = (ymin +. ymax)/.2. in
+	 N(aux (n-1) x1 xmax ymin y1, aux (n-1) x1 xmax y1 ymax, 
+	   aux (n-1) xmin x1 ymin y1, aux (n-1) xmin x1 y1 ymax) in
+aux n 0. xm 0. ym;;
+
+let rec rayon_max = function
+  | [] -> 0.
+  | b :: r -> max b.r (rayon_max r);;
+(* Calcule le rayon maximal d'une liste de boules. *)
+
+type quadtree_list = F of boule list | N of quadtree_list*quadtree_list*quadtree_list*quadtree_list;;
+
+let quadtree_list built l = 
+  let r = rayon_max l in
+  let xm = float_of_int (Graphics.size_x())
+  and ym = float_of_int (Graphics.size_y()) in
+  let n = int_of_float (max (xm/.(4.*.r)) (ym/.(4.*.r)) in
+		       let rec aux xmin xmax ymin ymax
