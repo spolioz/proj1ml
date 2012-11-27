@@ -83,6 +83,21 @@ b2.v <- add_vect b2.v dv;
 b1.v <- sous_vect b1.v dv;;
 (* Gère la collision entre deux boules (uniquement si elles sont en contact!) *)
 
+let collision_triple b1 b2 b3 = 
+separe b1 b2;
+separe b2 b3;
+separe b1 b3;
+  let u = vect_dir b1 b2 in
+  let v = vect_dir b2 b3 in
+  let w = vect_dir b1 b3 in
+  let dvu = mult_scalaire (scalaire (sous_vect (mult_scalaire 0.5 b1.v) (mult_scalaire 0.5 b2.v)) u) u in
+  let dvv = mult_scalaire (scalaire (sous_vect (mult_scalaire 0.5 b2.v) (mult_scalaire 0.5 b3.v)) v) v in
+  let dvw = mult_scalaire (scalaire (sous_vect (mult_scalaire 0.5 b1.v) (mult_scalaire 0.5 b3.v)) w) w in
+b1.v <- sous_vect (sous_vect b1.v dvu) dvw;
+b2.v <- sous_vect (add_vect b2.v dvu) dvv;
+b3.v <- add_vect (add_vect b3.v dvv) dvw;;
+(* Gère une collision entre 3 boules. *)
+
 let contact_trou b trou = distance b trou < trou.r;;
 (* Indique si oui ou non une boule est en contact avec un trou. *)
 
@@ -291,42 +306,46 @@ let make_triangle_boule n r =
 let l = make_triangle_boule 6 20.;;
 
 let m = make_billard l;;
+
+(*while m.n > 0 do*)
+m.boules.(21).o.x <- 120.;
+m.boules.(21).o.y <- 230.;;
 draw_billard m;;
-(*
-launch m;;
-*)
-m;;
-while m.n > 0 do
-m.boules.(0).v.x <- 1000. -. (Random.float 2000.);
-m.boules.(0).v.y <- 1000. -. (Random.float 2000.);
-launch m done;;
+
+m.boules.(21).v.x <- 500.;
+m.boules.(21).v.y <- 0.;
+launch m (*done*);;
 
 
 type surface = float * float * float * float;;
 (* Une surface est un rectangle repéré par ses 
 abscisses et ordonnées minimales et maximales. *)
-type quadtree = F of surface*(boule list) | N of quadtree*quadtree*quadtree*quadtree;;
 
-let rec quadtree_create n =
-  let xm = float_of_int (Graphics.size_x())
-  and ym = float_of_int (Graphics.size_y()) in
-  let rec aux n xmin xmax ymin ymax = 
-    if n = 0 then F(0., 0., xm, ym)
-    else let x1 = (xmin +. xmax)/.2. and y1 = (ymin +. ymax)/.2. in
-	 N(aux (n-1) x1 xmax ymin y1, aux (n-1) x1 xmax y1 ymax, 
-	   aux (n-1) xmin x1 ymin y1, aux (n-1) xmin x1 y1 ymax) in
-aux n 0. xm 0. ym;;
+type quadtree = F of surface*(boule list) | N of quadtree*quadtree*quadtree*quadtree;;
+(* Un quadtree renseigne ses subdivision par structure arborescente, ainsi que la liste
+des boules intersectant chaque subdivision. *)
 
 let rec rayon_max = function
   | [] -> 0.
   | b :: r -> max b.r (rayon_max r);;
 (* Calcule le rayon maximal d'une liste de boules. *)
 
-type quadtree_list = F of boule list | N of quadtree_list*quadtree_list*quadtree_list*quadtree_list;;
+let rec boule_list_intersect xmin xmax ymin ymax = function
+  | [] -> []
+  | b :: r -> if (b.o.x +. b.r > xmin && b.o.x -. b.r < xmax && b.o.y +. b.r > ymin && b.o.y -. b.r < ymax)
+    then b :: (boule_list_intersect xmin xmax ymin ymax r)
+    else boule_list_intersect xmin xmax ymin ymax r;;
 
-let quadtree_list built l = 
+let rec quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
-  let n = int_of_float (max (xm/.(4.*.r)) (ym/.(4.*.r)) in
-		       let rec aux xmin xmax ymin ymax
+  let n = int_of_float (max (xm/.(4.*.r)) (ym/.(4.*.r))) in
+  let rec aux n xmin xmax ymin ymax l = 
+    if n = 0 then F((xmin, ymin, xmax, ymax), (boule_list_intersect xmin xmax ymin ymax l))
+    else let x1 = (xmin +. xmax)/.2. and y1 = (ymin +. ymax)/.2. in
+	 N(aux (n-1) x1 xmax ymin y1 (boule_list_intersect x1 xmax ymin y1 l), 
+	   aux (n-1) x1 xmax y1 ymax (boule_list_intersect x1 xmax y1 ymax l), 
+	   aux (n-1) xmin x1 ymin y1 (boule_list_intersect xmin x1 ymin y1 l), 
+	   aux (n-1) xmin x1 y1 ymax (boule_list_intersect xmin x1 y1 ymax l)) in
+aux n 0. xm 0. ym;;
