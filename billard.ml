@@ -161,7 +161,14 @@ for i = 0 to n-1 do
 done;
 for i = 1 to n-1 do for j = 0 to i-1 do
   if contact m.(i) m.(j) 
-  then collision m.(i) m.(j) 
+  then
+    let temp = ref false in
+    for k = j+1 to i-1 do
+      if contact m.(i) m.(k)
+      then
+(	collision_triple m.(i) m.(j) m.(k) ; temp <- true )
+	 done
+if !temp then collision m.(i) m.(j) 
   (* On fait rebondir les boules qui s'entrechoquent. *)
 done done;
 let n1 = Array.length bill.trous in
