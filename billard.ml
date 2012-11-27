@@ -340,22 +340,33 @@ let rec rayon_max = function
   | b :: r -> max b.r (rayon_max r);;
 (* Calcule le rayon maximal d'une liste de boules. *)
 
-let rec boule_list_intersect xmin xmax ymin ymax = function
+let mem_surface b surf = let (xmin, ymin, xmax, ymax) = surf in
+b.o.x +. b.r > xmin && b.o.x -. b.r < xmax && b.o.y +. b.r > ymin && b.o.y -. b.r < ymax;;
+
+let rec boule_list_intersect surf = function
   | [] -> []
-  | b :: r -> if (b.o.x +. b.r > xmin && b.o.x -. b.r < xmax && b.o.y +. b.r > ymin && b.o.y -. b.r < ymax)
-    then b :: (boule_list_intersect xmin xmax ymin ymax r)
-    else boule_list_intersect xmin xmax ymin ymax r;;
+  | b :: r -> if (mem_surface b surf)
+    then b :: (boule_list_intersect surf r)
+    else boule_list_intersect surf r;;
 
 let rec quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
   let n = int_of_float (max (xm/.(4.*.r)) (ym/.(4.*.r))) in
-  let rec aux n xmin xmax ymin ymax l = 
-    if n = 0 then F((xmin, ymin, xmax, ymax), (boule_list_intersect xmin xmax ymin ymax l))
+  let rec aux n surf l = let (xmin, ymin, xmax, ymax) = surf in
+    if n = 0 then F((surf), (boule_list_intersect surf l))
     else let x1 = (xmin +. xmax)/.2. and y1 = (ymin +. ymax)/.2. in
-	 N(aux (n-1) x1 xmax ymin y1 (boule_list_intersect x1 xmax ymin y1 l), 
-	   aux (n-1) x1 xmax y1 ymax (boule_list_intersect x1 xmax y1 ymax l), 
-	   aux (n-1) xmin x1 ymin y1 (boule_list_intersect xmin x1 ymin y1 l), 
-	   aux (n-1) xmin x1 y1 ymax (boule_list_intersect xmin x1 y1 ymax l)) in
-aux n 0. xm 0. ym;;
+	 let surf4 = (x1, xmax, ymin, y1)
+	 and surf3 = (x1, xmax, y1, ymax)
+	 and surf1 = (xmin, x1, ymin, y1)
+	 and surf2 = (xmin, x1, y1, ymax) in
+	 N(aux (n-1) surf1 (boule_list_intersect surf1 l), 
+	   aux (n-1) surf2 (boule_list_intersect surf2 l), 
+	   aux (n-1) surf3 (boule_list_intersect surf3 l), 
+	   aux (n-1) surf4 (boule_list_intersect surf4 l)) in
+  let surf0 = (0., 0., xm, ym) in
+aux n surf0;;
+
+let find_boules_adjacentes b t = match t with
+  |F((xmin, ymin, xmax, ymax), l) -> 
