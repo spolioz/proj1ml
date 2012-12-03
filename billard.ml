@@ -1,9 +1,8 @@
 open Vecteur;;
 open Boule;;
 open Trou;;
-(*
-#load "graphics.cma";;
-*)
+open Graphics;;
+
 Graphics.open_graph "";;
 
 type billard = {boules : boule array; mutable n : int; f : float; trous : boule array};;
