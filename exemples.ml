@@ -4,6 +4,7 @@ open Trou;;
 open Billard;;
 open Graphique;;
 open Lancement;;
+open Interface;;
 
 let b1 = {o={x=200.;y=60.}; r=20.; m=8000.; v ={x=Random.float 3000. ;y=Random.float 3000.}; a = {x=0.; y=0.}};;
 let b2 = {o={x=180.;y=180.}; r=20.; m=125000.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
@@ -22,7 +23,4 @@ let l = make_triangle_boule 6 20.;;
 
 let m = make_billard l;;
 
-while m.n > 0 do
-m.boules.(0).v.x <- 1000. -. (Random.float 2000.);
-m.boules.(0).v.y <- 1000. -. (Random.float 2000.);
-launch m done;;
+partie m;;
