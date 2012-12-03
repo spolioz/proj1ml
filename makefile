@@ -9,4 +9,4 @@ all:
 	ocamlc graphics.cma vecteur.cma boule.cma billard.cma lancement.cma interface.cma exemples.ml -o exemples.exe
 
 clean:
-	rm -rf exemples.exe *.cmi *.cmo *~ 
+	rm -rf *.cmi *.cmo *.cma *~ 

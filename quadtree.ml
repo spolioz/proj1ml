@@ -1,3 +1,5 @@
+open Vecteur;;
+open Boule;;
 open Billard;;
 
 type surface = float * float * float * float;;
@@ -58,3 +60,5 @@ let rec find_boules_adjacentes b = function
     else concat_without_x b (concat_without_x b (concat_without_x b (concat_without_x b (find_boules_adjacentes b t1) (find_boules_adjacentes b t2)) (find_boules_adjacentes b t3)) (find_boules_adjacentes b t4)) []
 ;;
 (* Renvoie la liste des boules qui partagent une surface du quadtree avec b *)
+
+let iter3 l1 l2 = List.iter (List.iter2 l1 l2);;
