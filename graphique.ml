@@ -12,6 +12,7 @@ Graphics.moveto 0 0;;
 let random_color() = Graphics.rgb (Random.int 255) (Random.int 255) (Random.int 255);;
 
 let rose = Graphics.rgb 255 100 100;;
+let bordeau = Graphics.rgb 200 0 0;;
 let gris = Graphics.rgb 200 200 200;;
 
 let traduce_color n = 
@@ -45,7 +46,7 @@ Graphics.draw_circle x y i
 done;;
 
 let draw_boule b = 
-degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) rose Graphics.red;;
+degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) rose bordeau;;
 (* Pour dessiner une boule dans la fenêtre graphique. *)
 
 let draw_boule0 b = 

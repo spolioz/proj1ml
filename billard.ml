@@ -25,7 +25,9 @@ swap_tab i (n-1) (bill.boules); bill.n <- n-1;;
 let insert_boule b bill = bill.n <- bill.n + 1;
 bill.boules.(bill.n-1) <- bill.boules.(0);
 bill.boules.(0) <- b;;
-(* Insère la boule b dans le billard, sans se soucier d'aucun potentiel conflit. *)
+(* Insère la boule b dans le billard. Il ne faut pas dépasser le nombre de boule initial du billard!
+Il est donc préférable de n'utiliser cette fonction qu'une fois qu'une boule a été supprimée.
+En l'occurence, on l'utilisera pour réinsérer la boule blanche quand cette dernière tombera dans un trou. *)
 
 type direction = Droite | Gauche | Haut | Bas | Nil;;
 

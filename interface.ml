@@ -14,9 +14,6 @@ let select_boule bill =
   let t = bill.boules in
   let s = Graphics.wait_next_event [Graphics.Button_down] in
   let i = ref 0 in
-(*
-while (!i < n && not (intersect_boule (s.mouse_x, s.mouse_y) t.(!i))) do incr i done;
-if !i = n then raise EmptySelection*)
 if not (intersect_boule (s.mouse_x, s.mouse_y) t.(0)) then raise EmptySelection
 else t.(!i);;
 
@@ -45,10 +42,16 @@ while not (Graphics.button_down()) do
 done;
   let i = ref 1 in
 while ((!i < bill.n) && (not (contact b bill.boules.(!i)))) do incr i done;
-if !i < bill.n then place_boule bill;;
+if !i < bill.n then place_boule bill
+else 
+begin i:=0;
+     let n = Array.length bill.trous in
+  while ((!i < n) && (not (contact b bill.trous.(!i)))) do incr i done;
+  if !i < n then place_boule bill
+end;;
 
 let partie bill =
   let b = copy_boule bill.boules.(0) in
-while bill.n > 0 do
+while bill.n > 1 do
 lance_boule bill;
 if launch bill then (insert_boule b bill; place_boule bill) done;;

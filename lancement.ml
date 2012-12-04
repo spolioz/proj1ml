@@ -7,8 +7,8 @@ open Graphique;;
 let launch bill = 
   let rep = ref false in
 draw_billard bill;
-while (vit_max bill > 30. && bill.n > 0) do
-  rep := (!rep || evolution bill);
+while (not !rep && vit_max bill > 30. && bill.n > 1) do
+  rep :=  evolution bill;
   Graphics.auto_synchronize false;
   draw_billard bill;
   Graphics.auto_synchronize true;
