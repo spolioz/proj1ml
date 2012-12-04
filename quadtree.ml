@@ -47,6 +47,7 @@ let rec quadtree_create l =
 	   aux (n-1) surf4 (boule_list_intersect surf4 l)) in
   let surf0 = (0., 0., xm, ym) in
 aux n surf0;;
+(* à améliorer...*)
 
 let rec concat_without_x x l1 l2 = match l1 with
   | [] -> l2

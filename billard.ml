@@ -17,8 +17,15 @@ let copy_billard bill =
 (* Au cas où on voudrait avoir une copie indépendante d'un billard. *)
 
 let swap_tab i j tab = let x = tab.(j) in tab.(j) <- tab.(i); tab.(i) <- x;;
+
 let supprime_boule i bill = let n = bill.n in
 swap_tab i (n-1) (bill.boules); bill.n <- n-1;;
+(* Supprime la boule d'indice i dans le billard. *)
+
+let insert_boule b bill = bill.n <- bill.n + 1;
+bill.boules.(bill.n-1) <- bill.boules.(0);
+bill.boules.(0) <- b;;
+(* Insère la boule b dans le billard, sans se soucier d'aucun potentiel conflit. *)
 
 type direction = Droite | Gauche | Haut | Bas | Nil;;
 
@@ -46,6 +53,7 @@ match dir with
 en fonction de la direction d'échappement. *)
 
 let evolution bill =
+  let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
 bill.trous.(1).o.x <- xm;
@@ -88,7 +96,7 @@ while !i < bill.n do
 donc à chaque itération la nouvelle valeur de bill.n. *)
   for j = 0 to n1-1 do
     if tombe_trou m.(!i) bill.trous.(j) 
-    then (supprime_boule !i bill)
+    then (if !i = 0 then rep := true; supprime_boule !i bill)
     (* On supprime les boules qui sont tombées dans un trou. *)
     else if contact_trou m.(!i) bill.trous.(j) 
     then interaction_trou m.(!i) bill.trous.(j)
@@ -96,10 +104,12 @@ donc à chaque itération la nouvelle valeur de bill.n. *)
   done;
   incr i
 done;
-while (Sys.time() -. t < dt) do () done
+while (Sys.time() -. t < dt) do () done;
 (* On attend dt, afin que l'affichage séquentiel suive la frame. *)
+!rep
 ;;
-(* Fait passer la configuration d'un billard de l'instant t à l'instant t+dt. *)
+(* Fait passer la configuration d'un billard de l'instant t à l'instant t+dt.
+Renvoie true si la boule d'indice 0 a été supprimée, false sinon. *)
 
 let vit_max bill = let n = bill.n in
 		   let m = bill.boules in
@@ -110,3 +120,5 @@ for i = 1 to n-1 do
 done;
 !max;;
 (* Renvoie la vitesse de la boule la plus rapide à l'intérieur du billard. *)
+
+

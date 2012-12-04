@@ -5,14 +5,17 @@ open Billard;;
 open Graphique;;
 
 let launch bill = 
+  let rep = ref false in
 draw_billard bill;
 while (vit_max bill > 30. && bill.n > 0) do
-  evolution bill;  
+  rep := (!rep || evolution bill);
   Graphics.auto_synchronize false;
   draw_billard bill;
   Graphics.auto_synchronize true;
-done;;
-(* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. *)
+done;
+!rep;;
+(* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. 
+Renvoie true si la boule d'indice 0 a été supprimée au cours de ce lancer. *)
 
 
 (* Fonctions de création aléatoire utiles *)
