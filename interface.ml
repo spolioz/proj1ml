@@ -26,7 +26,7 @@ let b = select_real_boule bill in
 let x,y = Graphics.mouse_pos() in
 let s = Graphics.wait_next_event [Graphics.Button_down] in
 let x2 = s.mouse_x and y2 = s.mouse_y in
-b.v <- {x = 5. *. float_of_int (x-x2); y = 5. *. float_of_int (y-y2)};;
+b.v <- {x = 5. *. float_of_int (x2-x); y = 5. *. float_of_int (y2-y)};;
 
 let rec place_boule bill = 
   let t  = ref (Sys.time()) in
