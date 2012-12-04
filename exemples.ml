@@ -5,6 +5,7 @@ open Billard;;
 open Graphique;;
 open Lancement;;
 open Interface;;
+open Quadtree;;
 
 let b1 = {o={x=200.;y=60.}; r=20.; m=8000.; v ={x=Random.float 3000. ;y=Random.float 3000.}; a = {x=0.; y=0.}};;
 let b2 = {o={x=180.;y=180.}; r=20.; m=125000.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
@@ -19,8 +20,8 @@ let m = {boules = [|b1;b2;b3|]; n=3; f=0.999; trous = [|trou1; trou2; trou3; tro
 
 Graphics.open_graph "";;
 
-let l = make_triangle_boule 10 20.;;
+let l = make_triangle_boule 12 20.;;
 
 let m = make_billard l;;
 
-partie m;;
+partie_with_quadtree m;;

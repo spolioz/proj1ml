@@ -1,6 +1,12 @@
 open Vecteur;;
+open Trou;;
 open Boule;;
 open Billard;;
+open Graphics;;
+open Lancement;;
+open Graphique;;
+open Interface;;
+
 
 type surface = float * float * float * float;;
 (* Une surface est un rectangle repéré par ses 
@@ -28,7 +34,7 @@ let rec boule_list_intersect surf = function
     then b :: (boule_list_intersect surf r)
     else boule_list_intersect surf r;;
 
-let rec quadtree_create l =
+let quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
@@ -49,7 +55,7 @@ inutile de subdiviser davantage. *)
 	   aux (n-1) surf3 (boule_list_intersect surf3 l), 
 	   aux (n-1) surf4 (boule_list_intersect surf4 l)) in
   let surf0 = (0., 0., xm, ym) in
-aux n surf0;;
+aux n surf0 l;;
 
 
 let rec concat_without_x x l1 l2 = match l1 with
@@ -65,16 +71,28 @@ let rec find_boules_adjacentes b = function
 ;;
 (* Renvoie la liste des boules qui partagent une surface du quadtree avec b *)
 
-let iter3 l1 l2 = List.iter (List.iter2 l1 l2);;
-
 let rec list_of_array t n = 
 if n = 0 then []
 else t.(n-1) :: (list_of_array t (n-1));;
 (* Crée une liste à partir des n premiers éléments de t (n doit être inférieur à la taille de t!) *)
 
+let search_contact_triple b1 b2 =
+  let rec aux test = function
+  | [] -> test
+  | b3::r -> if contact_triple b1 b2 b3 then (collision_triple b1 b2 b3; true)
+    else aux test r
+  in aux false;;
+(* Gère un potentiel contact triple possible entre b1, b2, et une boule d'une liste.
+Renvoie true si une telle collision a eu lieu. *)
+
+let gere_contact b = function
+  | [] -> ()
+  | x::r -> List.iter (fun x -> if contact b x then if not (search_contact_triple b x r) then collision b x) r;;
+(* Gère toute sorte de contact possible entre la boule b et les boules d'une liste. *)
+
 let evolution_with_quadtree bill =
   let boules_list = list_of_array bill.boules bill.n in
-  let t = quad_tree_create l in
+  let tree = quadtree_create boules_list in
   let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
@@ -98,24 +116,11 @@ for i = 0 to n-1 do
   then ricochet m.(i) dir
   (* La boule sort du billard, il faut donc la faire rebondir contre le bord. *)
 done;
-
-(* à modifier ici en utilisant le quad_tree*)
-
-for i = 1 to n-1 do for j = 0 to i-1 do
-  if contact m.(i) m.(j) 
-  then begin
-    let test_contact = ref false in
-    for k = j+1 to i-1 do
-      if contact_triple m.(i) m.(j) m.(k)
-      then
-(	collision_triple m.(i) m.(j) m.(k) ; test_contact := true )
-    done; 
-    if not !test_contact then collision m.(i) m.(j) end
-  (* On fait rebondir les boules qui s'entrechoquent. *)
-done done;
-
-(* fin de l'utilisation du quad_tree *)
-
+for i = 1 to n-1 do
+  let b = m.(i) in
+  let l = find_boules_adjacentes b tree in
+  gere_contact b l
+done;
 let n1 = Array.length bill.trous in
 let i = ref 0 in
 while !i < bill.n do
@@ -136,3 +141,20 @@ while (Sys.time() -. t < dt) do () done;
 (* On attend dt, afin que l'affichage séquentiel suive la frame. *)
 !rep
 ;;
+
+let launch_with_quadtree bill = 
+  let rep = ref false in
+draw_billard bill;
+while (not !rep && vit_max bill > 30. && bill.n > 1) do
+  rep :=  evolution_with_quadtree bill;
+  Graphics.auto_synchronize false;
+  draw_billard bill;
+  Graphics.auto_synchronize true;
+done;
+!rep;;
+
+let partie_with_quadtree bill =
+  let b = copy_boule bill.boules.(0) in
+while bill.n > 1 do
+lance_boule bill;
+if launch bill then (insert_boule b bill; place_boule bill) done;;
