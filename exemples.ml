@@ -19,7 +19,7 @@ let m = {boules = [|b1;b2;b3|]; n=3; f=0.999; trous = [|trou1; trou2; trou3; tro
 
 Graphics.open_graph "";;
 
-let l = make_triangle_boule 6 20.;;
+let l = make_triangle_boule 10 20.;;
 
 let m = make_billard l;;
 
