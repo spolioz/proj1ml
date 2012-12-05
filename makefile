@@ -2,7 +2,7 @@ all:
 	ocamlc -a vecteur.ml -o vecteur.cma
 	ocamlc -a vecteur.cma boule.ml -o boule.cma
 	ocamlc -a boule.cma trou.ml -o trou.cma
-	ocamlc -a trou.cma billard.ml -o billard.cma
+	ocamlc -a graphics.cma trou.cma billard.ml -o billard.cma
 	ocamlc -a billard.cma graphique.ml -o graphique.cma
 	ocamlc -a graphique.cma lancement.ml -o lancement.cma
 	ocamlc -a interface.ml -o interface.cma

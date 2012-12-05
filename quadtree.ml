@@ -142,6 +142,29 @@ while (Sys.time() -. t < dt) do () done;
 !rep
 ;;
 
+let rec draw_quadtree = function
+  |F(surf,l) -> let (xmin, ymin, xmax, ymax) = surf in
+		Graphics.draw_rect (int_of_float xmin) (int_of_float xmax) (int_of_float(xmax-.xmin)) (int_of_float(ymax-.ymin))
+  |N(surf,t1,t2,t3,t4) -> draw_quadtree t1; draw_quadtree t2; draw_quadtree t3; draw_quadtree t4;;
+
+let draw_billard_with_quadtree bill tree = 
+  let xm = Graphics.size_x() 
+  and ym = Graphics.size_y() in
+  let m = bill.boules in
+  let n = bill.n in
+reset();
+Graphics.set_color vert;
+Graphics.fill_rect 0 0 xm ym;
+draw_quadtree tree;
+let n1 = Array.length bill.trous in
+for i = 0 to n1-1 do 
+  draw_trou bill.trous.(i) done;
+for i = 1 to n-1 do
+  draw_boule m.(i) 
+done;
+draw_boule0 m.(0);
+;;
+
 let launch_with_quadtree bill = 
   let rep = ref false in
 draw_billard bill;

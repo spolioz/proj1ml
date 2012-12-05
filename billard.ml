@@ -3,7 +3,7 @@ open Boule;;
 open Trou;;
 open Graphics;;
 
-Graphics.open_graph "";;
+Graphics.open_graph " 1200x800";;
 
 type billard = {boules : boule array; mutable n : int; f : float; trous : boule array};;
 

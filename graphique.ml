@@ -14,6 +14,8 @@ let random_color() = Graphics.rgb (Random.int 255) (Random.int 255) (Random.int 
 let rose = Graphics.rgb 255 100 100;;
 let bordeau = Graphics.rgb 200 0 0;;
 let gris = Graphics.rgb 200 200 200;;
+let vert = Graphics.rgb 13 191 49;;
+let marron = Graphics.rgb 88 41 0;;
 
 let traduce_color n = 
   let b = n mod 256 in
@@ -53,8 +55,10 @@ let draw_boule0 b =
 degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.white gris;;
 (* Pour dessiner la boule blanche dans la fenêtre graphique. *)
 
-let draw_trou b = Graphics.set_color Graphics.black; 
-Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;
+let draw_trou b = 
+degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.black marron;;
+(*Graphics.set_color Graphics.black; 
+Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;*)
 let clear_boule b = Graphics.set_color Graphics.white; 
 Graphics.fill_circle(int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;
 (* Pour effacer une boule de la fenêtre graphique. *)
@@ -64,7 +68,7 @@ let draw_billard bill =
   let m = bill.boules in
   let n = bill.n in
 reset();
-Graphics.set_color (Graphics.rgb 13 191 49);
+Graphics.set_color vert;
 Graphics.fill_rect 0 0 xm ym;
 let n1 = Array.length bill.trous in
 for i = 0 to n1-1 do 
