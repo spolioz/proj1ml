@@ -6,7 +6,7 @@ all:
 	ocamlc -a billard.cma graphique.ml -o graphique.cma
 	ocamlc -a graphique.cma lancement.ml -o lancement.cma
 	ocamlc -a interface.ml -o interface.cma
-	ocamlc -a interface.cma quadtree.ml -o quadtree.cma
+	ocamlc -a graphics.cma interface.cma quadtree.ml -o quadtree.cma
 	ocamlc graphics.cma vecteur.cma boule.cma trou.cma billard.cma graphique.cma lancement.cma interface.cma quadtree.cma exemples.ml -o exemples.exe
 
 clean:

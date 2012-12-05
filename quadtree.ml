@@ -57,7 +57,6 @@ inutile de subdiviser davantage. *)
   let surf0 = (0., 0., xm, ym) in
 aux n surf0 l;;
 
-
 let rec concat_without_x x l1 l2 = match l1 with
   | [] -> l2
   | a::r -> if a = x then concat_without_x x r l2
@@ -76,6 +75,10 @@ if n = 0 then []
 else t.(n-1) :: (list_of_array t (n-1));;
 (* Crée une liste à partir des n premiers éléments de t (n doit être inférieur à la taille de t!) *)
 
+let build_quadtree bill = 
+  let l = list_of_array bill.boules bill.n in
+quadtree_create l;;
+
 let search_contact_triple b1 b2 =
   let rec aux test = function
   | [] -> test
@@ -90,9 +93,7 @@ let gere_contact b = function
   | x::r -> List.iter (fun x -> if contact b x then if not (search_contact_triple b x r) then collision b x) r;;
 (* Gère toute sorte de contact possible entre la boule b et les boules d'une liste. *)
 
-let evolution_with_quadtree bill =
-  let boules_list = list_of_array bill.boules bill.n in
-  let tree = quadtree_create boules_list in
+let evolution_with_quadtree bill tree =
   let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
@@ -169,9 +170,10 @@ let launch_with_quadtree bill =
   let rep = ref false in
 draw_billard bill;
 while (not !rep && vit_max bill > 30. && bill.n > 1) do
-  rep :=  evolution_with_quadtree bill;
+  let tree = build_quadtree bill in
+  rep :=  evolution_with_quadtree bill tree;
   Graphics.auto_synchronize false;
-  draw_billard bill;
+  draw_billard_with_quadtree bill tree;
   Graphics.auto_synchronize true;
 done;
 !rep;;
@@ -180,4 +182,4 @@ let partie_with_quadtree bill =
   let b = copy_boule bill.boules.(0) in
 while bill.n > 1 do
 lance_boule bill;
-if launch bill then (insert_boule b bill; place_boule bill) done;;
+if launch_with_quadtree bill then (insert_boule b bill; place_boule bill) done;;

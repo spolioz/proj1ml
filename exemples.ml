@@ -24,4 +24,4 @@ let l = make_triangle_boule 8 20.;;
 
 let m = make_billard l;;
 
-partie_with_quadtree m;;
+partie m;;
