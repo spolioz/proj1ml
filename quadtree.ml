@@ -38,17 +38,17 @@ let quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
-  let n = int_of_float (max (xm/.(2.*.r)) (ym/.(2.*.r))) in
+  let n = int_of_float (log (max (xm/.(2.*.r)) (ym/.(2.*.r))) /. (log 2.)) in
 (* On veut qu'une feuille du quadtree ne puisse contenir au plus que 4 boules. *)
   let rec aux n surf l = let (xmin, ymin, xmax, ymax) = surf in
     if (n = 0 || l = []) then F((surf), (boule_list_intersect surf l))
 (* Quand n=0, on a atteint la taille d'une feuille. Si l = [], on n'a pas de boules dans la surface, il est donc
 inutile de subdiviser davantage. *)
     else let x1 = (xmin +. xmax)/.2. and y1 = (ymin +. ymax)/.2. in
-	 let surf4 = (x1, xmax, ymin, y1)
-	 and surf3 = (x1, xmax, y1, ymax)
-	 and surf1 = (xmin, x1, ymin, y1)
-	 and surf2 = (xmin, x1, y1, ymax) in
+	 let surf4 = (x1, ymin, xmax, y1)
+	 and surf3 = (x1, y1, xmax, ymax)
+	 and surf1 = (xmin, ymin, x1, y1)
+	 and surf2 = (xmin, y1, x1, ymax) in
 	 N(surf, 
 	   aux (n-1) surf1 (boule_list_intersect surf1 l), 
 	   aux (n-1) surf2 (boule_list_intersect surf2 l), 
@@ -143,10 +143,12 @@ while (Sys.time() -. t < dt) do () done;
 !rep
 ;;
 
-let rec draw_quadtree = function
-  |F(surf,l) -> let (xmin, ymin, xmax, ymax) = surf in
-		Graphics.draw_rect (int_of_float xmin) (int_of_float xmax) (int_of_float(xmax-.xmin)) (int_of_float(ymax-.ymin))
-  |N(surf,t1,t2,t3,t4) -> draw_quadtree t1; draw_quadtree t2; draw_quadtree t3; draw_quadtree t4;;
+let draw_quadtree t = Graphics.set_color Graphics.black;
+  let rec aux = function
+    |F(surf,l) -> let (xmin, ymin, xmax, ymax) = surf in
+		Graphics.draw_rect (int_of_float xmin) (int_of_float ymin) (int_of_float(xmax-.xmin)) (int_of_float(ymax-.ymin))
+    |N(surf,t1,t2,t3,t4) -> aux t1; aux t2; aux t3; aux t4 in
+aux t;;
 
 let draw_billard_with_quadtree bill tree = 
   let xm = Graphics.size_x() 
@@ -159,12 +161,12 @@ Graphics.fill_rect 0 0 xm ym;
 draw_quadtree tree;
 let n1 = Array.length bill.trous in
 for i = 0 to n1-1 do 
-  draw_trou bill.trous.(i) done;
+  draw_trou bill.trous.(i) 
+done;
 for i = 1 to n-1 do
   draw_boule m.(i) 
 done;
-draw_boule0 m.(0);
-;;
+draw_boule0 m.(0);;
 
 let launch_with_quadtree bill = 
   let rep = ref false in

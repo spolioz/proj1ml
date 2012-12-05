@@ -76,6 +76,6 @@ for i = 0 to n1-1 do
 for i = 1 to n-1 do
   draw_boule m.(i) 
 done;
-draw_boule0 m.(0);
+draw_boule0 m.(0)
 ;;
 (* Pour dessiner la configuration actuelle d'un billard dans la fenêtre graphique. *)
