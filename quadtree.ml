@@ -38,7 +38,7 @@ let quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
-  let n = int_of_float (log (max (xm/.(2.*.r)) (ym/.(2.*.r))) /. (log 2.)) in
+  let n = int_of_float (log (max (xm/.r) (ym/.r)) /. (log 2.)) in
 (* On veut qu'une feuille du quadtree ne puisse contenir au plus que 4 boules. *)
   let rec aux n surf l = let (xmin, ymin, xmax, ymax) = surf in
     if (n = 0 || l = []) then F((surf), (boule_list_intersect surf l))
@@ -57,17 +57,17 @@ inutile de subdiviser davantage. *)
   let surf0 = (0., 0., xm, ym) in
 aux n surf0 l;;
 
-let rec concat_without_x x l1 l2 = match l1 with
-  | [] -> l2
-  | a::r -> if a = x then concat_without_x x r l2
-    else a::(concat_without_x x r l2);;
-(* Concatène une liste à une autre en supprimant les apparitions de x dans la première. *)
+let rec union l1 l2 =
+if l2 = [] then l1
+else match l1 with
+  |[] -> l2
+  |x::r -> if List.mem x l2 then union r l2
+    else x :: (union r l2);;
 
 let rec find_boules_adjacentes b = function
   |F(surf, l) -> if mem_surface b surf then l else []
   |N(surf, t1, t2, t3, t4) -> if not (mem_surface b surf) then []
-    else concat_without_x b (concat_without_x b (concat_without_x b (concat_without_x b (find_boules_adjacentes b t1) (find_boules_adjacentes b t2)) (find_boules_adjacentes b t3)) (find_boules_adjacentes b t4)) []
-;;
+    else union (union (union (find_boules_adjacentes b t1) (find_boules_adjacentes b t2)) (find_boules_adjacentes b t3)) (find_boules_adjacentes b t4);;
 (* Renvoie la liste des boules qui partagent une surface du quadtree avec b *)
 
 let rec list_of_array t n = 
@@ -90,7 +90,8 @@ Renvoie true si une telle collision a eu lieu. *)
 
 let gere_contact b = function
   | [] -> ()
-  | x::r -> List.iter (fun x -> if contact b x then if not (search_contact_triple b x r) then collision b x) r;;
+  | x::r -> if x = b then ()
+    else List.iter (fun x -> if contact b x then if not (search_contact_triple b x r) then collision b x) r;;
 (* Gère toute sorte de contact possible entre la boule b et les boules d'une liste. *)
 
 let evolution_with_quadtree bill tree =
