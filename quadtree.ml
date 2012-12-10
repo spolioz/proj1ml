@@ -144,24 +144,11 @@ for i = 0 to n-1 do
 done;
 for i = 1 to n-1 do 
   let b = m.(i) in
-    quadtree_except b tree;
+  quadtree_except b tree;
   let l = find_boules_adjacentes b !tree in
-gere_contact b l
-(*
+  gere_contact b l
 (* On ne veut tester qu'une seule fois chaque collision, c'est pourquoi on retire la boule du quadtree avant de tester ses collisions. *)
-  let m0 = Array.of_list (find_boules_adjacentes b !tree) in
-  let n0 = Array.length m0 in
-  for j = 0 to n0-1 do
-    if contact b m0.(j)
-    then begin
-      let test_contact = ref false in
-      for k = j+1 to n0-1 do
-        if contact_triple b m0.(j) m0.(k)
-        then (collision_triple b m0.(j) m0.(k); test_contact := true)
-      done; 
-    if not !test_contact then collision b m0.(j) end
-  (* On fait rebondir les boules qui s'entrechoquent. *)
-done*) done;
+done;
 let n1 = Array.length bill.trous in
 let i = ref 0 in
 while !i < bill.n do

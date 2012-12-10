@@ -9,12 +9,12 @@ exception EmptySelection;;
 
 let intersect_boule (x,y) b = carre (b.o.x -. (float_of_int x)) +. carre (b.o.y -. (float_of_int y)) < carre b.r ;;
 
-let select_boule bill = 
+let rec select_boule bill = 
   (*let n = bill.n in*)
   let t = bill.boules in
   let s = Graphics.wait_next_event [Graphics.Button_down] in
   let i = ref 0 in
-if not (intersect_boule (s.mouse_x, s.mouse_y) t.(0)) then raise EmptySelection
+if not (intersect_boule (s.mouse_x, s.mouse_y) t.(0)) then select_boule bill
 else t.(!i);;
 
 let rec select_real_boule bill = 
@@ -23,7 +23,7 @@ with EmptySelection -> select_real_boule bill;;
 
 
 let lance_boule bill =
-let b = select_real_boule bill in
+let b = select_boule bill in
 let x,y = Graphics.mouse_pos() in
 let s = Graphics.wait_next_event [Graphics.Button_down] in
 let x2 = s.mouse_x and y2 = s.mouse_y in
@@ -40,7 +40,7 @@ while not (Graphics.button_down()) do
     Graphics.auto_synchronize false;
     draw_billard bill;
     Graphics.set_color Graphics.black;
-    Graphics.draw_segments[|x,y,x1,y1|];
+    Graphics.draw_segments [|x,y,x1,y1|];
     Graphics.auto_synchronize true;
     t := Sys.time()
   end
@@ -66,10 +66,13 @@ done;
 while ((!i < bill.n) && (not (contact b bill.boules.(!i)))) do incr i done;
 if !i < bill.n then place_boule bill
 else 
-begin i:=0;
-     let n = Array.length bill.trous in
+  begin i:=0;
+  let n = Array.length bill.trous in
   while ((!i < n) && (not (contact b bill.trous.(!i)))) do incr i done;
   if !i < n then place_boule bill
+  else
+    let dir = out_of_billard b in
+    if dir <> Nil then place_boule bill
 end;;
 
 let partie bill =
