@@ -23,6 +23,9 @@ let rec rayon_max = function
 
 let mem_surface b surf = let (xmin, ymin, xmax, ymax) = surf in
 b.o.x +. b.r > xmin && b.o.x -. b.r < xmax && b.o.y +. b.r > ymin && b.o.y -. b.r < ymax;;
+(* Vérifie si une boule b déborde sur une surface surf. Cette fonction n'est pas exacte, elle
+correspond à une approximation (elle serait exacte si la boule était carrée...). On se satisfera
+de cette approximation, qui de toute façon est suffisante pour nos utilisations à venir. *)
 
 let surf = function
   |F(surf, l) -> surf
@@ -39,7 +42,8 @@ let quadtree_create l =
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
   let n = int_of_float (log (max (xm/.r) (ym/.r)) /. (log 2.)) in
-(* On veut qu'une feuille du quadtree ne puisse contenir au plus que 4 boules. *)
+(* On veut qu'une feuille du quadtree ne puisse contenir au plus que 4 boules. n est le nombre de découpages en deux
+de la fenêtre graphique nécessaires pour obtenir des cases assez petites pour que cette propriété soit vérifiée. *)
   let rec aux n surf l = let (xmin, ymin, xmax, ymax) = surf in
     if (n = 0 || l = []) then F((surf), (boule_list_intersect surf l))
 (* Quand n=0, on a atteint la taille d'une feuille. Si l = [], on n'a pas de boules dans la surface, il est donc
@@ -88,10 +92,14 @@ let search_contact_triple b1 b2 =
 (* Gère un potentiel contact triple possible entre b1, b2, et une boule d'une liste.
 Renvoie true si une telle collision a eu lieu. *)
 
-let gere_contact b = function
+let rec gere_contact b = function
   | [] -> ()
   | x::r -> if x = b then ()
-    else List.iter (fun x -> if contact b x then if not (search_contact_triple b x r) then collision b x) r;;
+    else if contact b x then 
+      if not (search_contact_triple b x r) then collision b x
+      else ()
+    else ();
+    gere_contact b r;;
 (* Gère toute sorte de contact possible entre la boule b et les boules d'une liste. *)
 
 let evolution_with_quadtree bill tree =
@@ -118,11 +126,22 @@ for i = 0 to n-1 do
   then ricochet m.(i) dir
   (* La boule sort du billard, il faut donc la faire rebondir contre le bord. *)
 done;
-for i = 1 to n-1 do
+for i = 1 to n-1 do 
   let b = m.(i) in
-  let l = find_boules_adjacentes b tree in
-  gere_contact b l
-done;
+  let m0 = Array.of_list (find_boules_adjacentes b tree) in
+  let n0 = Array.length m0 in
+  for j = 0 to n0-1 do
+  if m0.(j) = b then () else
+    if contact b m0.(j)
+    then begin
+      let test_contact = ref false in
+      for k = j+1 to n0-1 do
+        if contact_triple b m0.(j) m0.(k)
+        then (collision_triple b m0.(j) m0.(k) ; test_contact := true)
+      done; 
+    if not !test_contact then collision b m0.(j) end
+  (* On fait rebondir les boules qui s'entrechoquent. *)
+done done;
 let n1 = Array.length bill.trous in
 let i = ref 0 in
 while !i < bill.n do
