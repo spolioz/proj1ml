@@ -41,7 +41,7 @@ let quadtree_create l =
   let r = rayon_max l in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
-  let n = int_of_float (log (max (xm/.r) (ym/.r)) /. (log 2.)) in
+  let n = int_of_float (log (max (xm/.(2.*.r)) (ym/.(2.*.r))) /. (log 2.)) in
 (* On veut qu'une feuille du quadtree ne puisse contenir au plus que 4 boules. n est le nombre de découpages en deux
 de la fenêtre graphique nécessaires pour obtenir des cases assez petites pour que cette propriété soit vérifiée. *)
   let rec aux n surf l = let (xmin, ymin, xmax, ymax) = surf in
@@ -74,6 +74,21 @@ let rec find_boules_adjacentes b = function
     else union (union (union (find_boules_adjacentes b t1) (find_boules_adjacentes b t2)) (find_boules_adjacentes b t3)) (find_boules_adjacentes b t4);;
 (* Renvoie la liste des boules qui partagent une surface du quadtree avec b *)
 
+let rec list_except x = function
+  |[] -> []
+  |a::r -> if a=x then r else a::(list_except x r);;
+(* Supprime la première apparition de x dans une liste. *)
+
+let rec erase_boule_from_quadtree b = function
+  |F(surf, l) -> if mem_surface b surf then F(surf, list_except b l) else F(surf,l)
+  |N(surf, t1, t2, t3, t4) -> if mem_surface b surf then
+      N(surf, erase_boule_from_quadtree b t1,  erase_boule_from_quadtree b t2,  erase_boule_from_quadtree b t3,  erase_boule_from_quadtree b t4)
+    else N(surf, t1, t2, t3, t4);;
+(* Supprime les apparitions de b dans un quadtree. *)
+
+let quadtree_except b t = t:=(erase_boule_from_quadtree b !t);;
+(* Remplace une référence de quadtree par le quadtree sans apparition de b *)
+
 let rec list_of_array t n = 
 if n = 0 then []
 else t.(n-1) :: (list_of_array t (n-1));;
@@ -102,7 +117,8 @@ let rec gere_contact b = function
     gere_contact b r;;
 (* Gère toute sorte de contact possible entre la boule b et les boules d'une liste. *)
 
-let evolution_with_quadtree bill tree =
+let evolution_with_quadtree bill quadtree =
+  let tree = ref quadtree in
   let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()) in
@@ -128,20 +144,24 @@ for i = 0 to n-1 do
 done;
 for i = 1 to n-1 do 
   let b = m.(i) in
-  let m0 = Array.of_list (find_boules_adjacentes b tree) in
+    quadtree_except b tree;
+  let l = find_boules_adjacentes b !tree in
+gere_contact b l
+(*
+(* On ne veut tester qu'une seule fois chaque collision, c'est pourquoi on retire la boule du quadtree avant de tester ses collisions. *)
+  let m0 = Array.of_list (find_boules_adjacentes b !tree) in
   let n0 = Array.length m0 in
   for j = 0 to n0-1 do
-  if m0.(j) = b then () else
     if contact b m0.(j)
     then begin
       let test_contact = ref false in
       for k = j+1 to n0-1 do
         if contact_triple b m0.(j) m0.(k)
-        then (collision_triple b m0.(j) m0.(k) ; test_contact := true)
+        then (collision_triple b m0.(j) m0.(k); test_contact := true)
       done; 
     if not !test_contact then collision b m0.(j) end
   (* On fait rebondir les boules qui s'entrechoquent. *)
-done done;
+done*) done;
 let n1 = Array.length bill.trous in
 let i = ref 0 in
 while !i < bill.n do

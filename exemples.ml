@@ -39,4 +39,4 @@ let t = quadtree_create l;;
 
 draw_billard_with_quadtree m t;;
 
-partie m;;
+partie_with_quadtree m;;
