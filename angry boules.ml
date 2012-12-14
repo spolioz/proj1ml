@@ -47,20 +47,24 @@ let sous_vect u v = {x = u.x -. v.x; y = u.y -. v.y};;
 let mult_scalaire k v =  {x = k *. v.x; y = k *. v.y};;
 (* Multiplication d'un vecteur par un scalaire flottant. *)
 
-let evolution_boule b =
+let contact b1 b2 = b1<>b2 && distance b1 b2 < (b1.r +. b2.r);;
+(* Détermine si oui ou non deux boules sont en contact strict. *)
+
+let exists_contact b niv = let i = ref 0 in 
+while (!i < niv.n && not (contact b niv.boules.(!i))) do incr i done;
+!i < niv.n;;
+
+let evolution_boule b niv =
   let v = norme b.v in
 b.v.x <- b.v.x *. f1 +. (dt *. b.a.x);
 b.v.y <- b.v.y *. f1 +. (dt *. b.a.y);
 b.o.x <- b.o.x +. (dt *. b.v.x);
 b.o.y <- b.o.y +. (dt *. b.v.y);
 b.a.x <- 0. (*-.v*.b.v.x*);
-b.a.y <- g (*-. v*.b.v.y*)
+if not (exists_contact b niv) then b.a.y <- g (*-. v*.b.v.y*)
 ;;
 (* Fait avancer les boules durant l'intervalle de temps dt, 
 selon leur vitesse, sans prendre en compte les collisions. *)
-
-let contact b1 b2 = distance b1 b2 < (b1.r +. b2.r);;
-(* Détermine si oui ou non deux boules sont en contact strict. *)
 
 let separe b1 b2 = 
   let bary = mult_scalaire (1./.(b1.r +. b2.r)) (add_vect (mult_scalaire b2.r b1.o) (mult_scalaire b1.r b2.o)) in
@@ -101,7 +105,7 @@ b.s <= 0. || b.o.x < -.b.r || b.o.x > b.r +. xm;;
 
 type direction = Droite | Gauche | Haut | Bas | Nil;;
 
-let out_of_billard b = 
+let out_of_niv b = 
 if b.o.y -. b.r < 0. then Bas
 else Nil;;
 (* Renvoie Nil si la boule est à l'intérieur strictement du billard,
@@ -118,11 +122,11 @@ let evolution niv =
   let n = niv.n in
   let t = Sys.time() in
 for i = 0 to n-1 do
-  evolution_boule m.(i)
+  evolution_boule m.(i) niv
   (* On commence par faire avancer les boules selon leur vitesse. *)
 done;
 for i = 0 to n-1 do
-  let dir = out_of_billard m.(i) in 
+  let dir = out_of_niv m.(i) in 
   ricochet m.(i) dir
   (* La boule tombe dans le sol, il faut donc la faire rebondir. *)
 done;
@@ -167,6 +171,7 @@ Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r
 Graphics.set_color Graphics.black;
 Graphics.draw_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;
 (* Pour dessiner une boule dans la fenêtre graphique. *)
+
 let draw_niveau niv = 
   let xm = Graphics.size_x() 
   and ym = Graphics.size_y() in
@@ -181,7 +186,10 @@ for i = 0 to n-1 do
 let launch niv = 
 draw_niveau niv;
 while (vit_max niv >= 30. && niv.n > 0) do
-  evolution niv; draw_niveau niv
+  evolution niv;
+  Graphics.auto_synchronize false;
+  draw_niveau niv;
+  Graphics.auto_synchronize true;draw_niveau niv
 done;;
 (* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. *)
 
