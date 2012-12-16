@@ -25,7 +25,15 @@ while (not !rep && vit_max bill > 30. && bill.n > 1) do
   draw_billard bill;
   Graphics.auto_synchronize true;
 done;
+let j = !nb - bill.n in
+if not !rep then
+incr_score (bill.barre) (j*(!i+1 + !i+j)*50);
+(* Si on est sorti de la boucle parce que la dernière boule a été rentrée, il faut quand même calculer le nouveau score! *)
 next_turn bill.barre;
+Graphics.auto_synchronize false;
+draw_billard bill;
+Graphics.auto_synchronize true;
+(* On redessine le billard pour que le changement de tour apparaisse effectivement au niveau des couleurs d'affichage des joueurs. *)
 !rep;;
 (* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. 
 Renvoie true si la boule d'indice 0 a été supprimée au cours de ce lancer. *)
@@ -47,14 +55,15 @@ let make_billard l =
 if l = [] then failwith "Ce serait mieux d'avoir des boules à placer dans le billard..."
 else begin
   let r = (List.hd l).r in
+  let r1 = r*.2. in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y()-40) in
-  let trou1 = {o={x=0.;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
-  and trou2 = {o={x=xm;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
-  and trou3 = {o={x=0.;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
-  and trou4 = {o={x=xm;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
-  and trou5 = {o={x=xm/.2.;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
-  and trou6 = {o={x=xm/.2.;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
+  let trou1 = {o={x=r1;y=r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
+  and trou2 = {o={x=xm-.r1;y=r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
+  and trou3 = {o={x=r1;y=ym-.r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
+  and trou4 = {o={x=xm-.r1;y=ym-.r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
+  and trou5 = {o={x=xm/.2.;y=r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
+  and trou6 = {o={x=xm/.2.;y=ym-.r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let trous = [|trou1; trou2; trou3; trou4; trou5; trou6|] in
   let close = {o={x=xm-.20.;y=ym+.20.}; r=8.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let barre = {j1 = (true,0); j2 = (false,0); close = close} in

@@ -59,13 +59,14 @@ let evolution bill =
   let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
   and ym = float_of_int (Graphics.size_y() - 40) in
-bill.trous.(1).o.x <- xm;
-bill.trous.(2).o.y <- ym;
-bill.trous.(3).o.x <- xm;
-bill.trous.(3).o.y <- ym;
+  let r1 = bill.trous.(0).r in
+bill.trous.(1).o.x <- xm-.r1;
+bill.trous.(2).o.y <- ym-.r1;
+bill.trous.(3).o.x <- xm-.r1;
+bill.trous.(3).o.y <- ym-.r1;
 bill.trous.(4).o.x <- xm/.2.;
 bill.trous.(5).o.x <- xm/.2.;
-bill.trous.(5).o.y <- ym;
+bill.trous.(5).o.y <- ym-.r1;
 bill.barre.close.o.x <- xm -. 20.;
 bill.barre.close.o.y <- ym +. 20.;
   let m = bill.boules in
