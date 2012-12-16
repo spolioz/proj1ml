@@ -13,6 +13,7 @@ let launch bill =
 (* i représente le nombre de boules supprimées pendant le tour *) 
 draw_billard bill;
 while (not !rep && vit_max bill > 30. && bill.n > 1) do
+  reset_maybe bill.barre;
   quit_maybe bill.barre;
 (* Si on a cliqué sur le bouton close, on ferme tout *)
   let j = !nb - bill.n in
@@ -66,7 +67,8 @@ else begin
   and trou6 = {o={x=xm/.2.;y=ym-.r1}; r=r1; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let trous = [|trou1; trou2; trou3; trou4; trou5; trou6|] in
   let close = {o={x=xm-.20.;y=ym+.20.}; r=8.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
-  let barre = {j1 = (true,0); j2 = (false,0); close = close} in
+  let reset = {o={x=xm-.50.;y=ym+.20.}; r=8.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
+  let barre = {j1 = (true,0); j2 = (false,0); reset = reset; close = close} in
   let m = Array.of_list l in
   let n = Array.length m in
   let bill = {boules = m; n=n; f = 0.995; trous=trous; barre=barre} in

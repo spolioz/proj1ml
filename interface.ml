@@ -10,6 +10,7 @@ exception EmptySelection;;
 
 let rec select_boule bill = 
   (*let n = bill.n in*)
+  reset_maybe bill.barre;
   quit_maybe bill.barre;
   let t = bill.boules in
   let s = Graphics.wait_next_event [Graphics.Button_down] in
@@ -18,6 +19,7 @@ if not (intersect_boule (s.mouse_x, s.mouse_y) t.(0)) then select_boule bill
 else t.(!i);;
 
 let lance_boule bill =
+reset_maybe bill.barre;
 quit_maybe bill.barre;
 let b = select_boule bill in
 let x,y = Graphics.mouse_pos() in
@@ -45,7 +47,8 @@ let x2,y2 = Graphics.mouse_pos() in
 b.v <- {x = 5. *. float_of_int (x2-x); y = 5. *. float_of_int (y2-y)};;
 *)
 
-let rec place_boule bill = 
+let rec place_boule bill =
+  reset_maybe bill.barre;
   quit_maybe bill.barre;
   let t  = ref (Sys.time()) in
   let b = bill.boules.(0) in
@@ -77,6 +80,7 @@ let rec partie() =
   let bill = initialise() in
   let b = copy_boule bill.boules.(0) in
 try (
+try (
   while bill.n > 1 do
     quit_maybe bill.barre;
     lance_boule bill;
@@ -84,4 +88,6 @@ try (
   done;
   draw_result bill.barre; partie()
 )
-with Close -> Graphics.close_graph();;
+with Close -> Graphics.close_graph()
+)
+with Reset -> partie();;

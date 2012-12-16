@@ -15,11 +15,12 @@ let random_color() = Graphics.rgb (Random.int 255) (Random.int 255) (Random.int 
 
 let rose = Graphics.rgb 255 100 100;;
 let bordeau = Graphics.rgb 200 0 0;;
-let orange = Graphics.rgb 255 125 0;;
+let orange = Graphics.rgb 255 100 20;;
 let gris = Graphics.rgb 200 200 200;;
 let vert = Graphics.rgb 13 191 49;;
 let marron_fonce = Graphics.rgb 88 41 0;;
 let marron_clair = Graphics.rgb 189 95 0;;
+let ciel = Graphics.rgb 117 117 255;;
 
 let traduce_color n = 
   let b = n mod 256 in
@@ -74,6 +75,11 @@ and a3 = add_vect close.o {x = -.x; y = x}
 and a4 = add_vect close.o {x = x; y = -.x} in
 Graphics.draw_segments [|(int_of_float a1.x,int_of_float a1.y,int_of_float a2.x,int_of_float a2.y); (int_of_float a3.x,int_of_float a3.y,int_of_float a4.x,int_of_float a4.y)|];;
 
+let draw_reset close = 
+degrade_circle (int_of_float close.o.x) (int_of_float close.o.y) (int_of_float close.r) Graphics.blue ciel;
+Graphics.set_color Graphics.black;
+Graphics.moveto ((int_of_float close.o.x)-2) ((int_of_float close.o.y) - 5);
+Graphics.draw_string "R";;
 
 let draw_barre barre =
   let xm = Graphics.size_x() and ym = Graphics.size_y() in
@@ -86,6 +92,7 @@ Graphics.draw_string ("Joueur 1 : "^(string_of_int (snd barre.j1)));
 Graphics.set_color color2;
 Graphics.moveto 160 (ym - 25);
 Graphics.draw_string ("Joueur 2 : "^(string_of_int (snd barre.j2)));
+draw_reset barre.reset;
 draw_close barre.close;;
 (* On affiche le joueur dont c'est le tour en bleu, et l'autre en rouge. *)
 

@@ -67,6 +67,8 @@ bill.trous.(3).o.y <- ym-.r1;
 bill.trous.(4).o.x <- xm/.2.;
 bill.trous.(5).o.x <- xm/.2.;
 bill.trous.(5).o.y <- ym-.r1;
+bill.barre.close.o.x <- xm -. 50.;
+bill.barre.close.o.y <- ym +. 20.;
 bill.barre.close.o.x <- xm -. 20.;
 bill.barre.close.o.y <- ym +. 20.;
   let m = bill.boules in
