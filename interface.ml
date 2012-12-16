@@ -4,10 +4,9 @@ open Boule;;
 open Billard;;
 open Lancement;;
 open Graphique;;
+open Barre;;
 
 exception EmptySelection;;
-
-let intersect_boule (x,y) b = carre (b.o.x -. (float_of_int x)) +. carre (b.o.y -. (float_of_int y)) < carre b.r ;;
 
 let rec select_boule bill = 
   (*let n = bill.n in*)

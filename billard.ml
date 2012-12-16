@@ -2,11 +2,12 @@ open Vecteur;;
 open Boule;;
 open Trou;;
 open Graphics;;
+open Barre;;
 
 Graphics.open_graph " 1200x800";;
 
-type billard = {boules : boule array; mutable n : int; f : float; trous : boule array};;
-
+type billard = {boules : boule array; mutable n : int; f : float; trous : boule array; barre : barre };;
+(*
 let copy_billard bill = 
   let m = bill.boules in
   let n = bill.n in
@@ -15,7 +16,7 @@ let copy_billard bill =
   for i = 1 to n-1 do rep.(i) <- copy_boule m.(i) done;
 {boules = rep; n = n; f = bill.f; trous = bill.trous};;
 (* Au cas où on voudrait avoir une copie indépendante d'un billard. *)
-
+*)
 let swap_tab i j tab = let x = tab.(j) in tab.(j) <- tab.(i); tab.(i) <- x;;
 
 let supprime_boule i bill = let n = bill.n in
@@ -33,7 +34,7 @@ type direction = Droite | Gauche | Haut | Bas | Nil;;
 
 let out_of_billard b = 
   let xm = float_of_int (Graphics.size_x()) 
-  and ym = float_of_int (Graphics.size_y()) in
+  and ym = float_of_int (Graphics.size_y() - 40) in
 if b.o.x -. b.r < 0. then Gauche
 else if b.o.x +. b.r > xm then Droite
 else if b.o.y -. b.r < 0. then Bas
@@ -44,7 +45,7 @@ et sinon la direction dans laquelle elle commence à sortir du billard. *)
 
 let ricochet b dir =
   let xm = float_of_int (Graphics.size_x()) 
-  and ym = float_of_int (Graphics.size_y()) in
+  and ym = float_of_int (Graphics.size_y() - 40) in
 match dir with
   |Droite -> b.v.x <- -. b.v.x; b.o.x <- xm -. b.r
   |Gauche -> b.v.x <- -. b.v.x; b.o.x <- b.r
@@ -57,7 +58,7 @@ en fonction de la direction d'échappement. *)
 let evolution bill =
   let rep = ref false in
   let xm = float_of_int (Graphics.size_x())
-  and ym = float_of_int (Graphics.size_y()) in
+  and ym = float_of_int (Graphics.size_y() - 40) in
 bill.trous.(1).o.x <- xm;
 bill.trous.(2).o.y <- ym;
 bill.trous.(3).o.x <- xm;
@@ -65,6 +66,8 @@ bill.trous.(3).o.y <- ym;
 bill.trous.(4).o.x <- xm/.2.;
 bill.trous.(5).o.x <- xm/.2.;
 bill.trous.(5).o.y <- ym;
+bill.barre.close.o.x <- xm -. 20.;
+bill.barre.close.o.y <- ym +. 20.;
   let m = bill.boules in
   let n = bill.n in
   let t = Sys.time() in

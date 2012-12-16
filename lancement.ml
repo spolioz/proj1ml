@@ -1,18 +1,28 @@
 open Vecteur;;
 open Boule;;
 open Trou;;
+open Barre;;
 open Billard;;
 open Graphique;;
 
 let launch bill = 
   let rep = ref false in
+  let nb = ref bill.n in
+(* nb représente le nombre de boules dans le billard. *)
+  let i = ref 0 in
+(* i représente le nombre de boules supprimées pendant le tour *) 
 draw_billard bill;
 while (not !rep && vit_max bill > 30. && bill.n > 1) do
+  quit_maybe bill.barre;
+  let j = !nb - bill.n in
+  incr_score (bill.barre) (j*(!nb+1 + !nb+j)*50);
+  nb := bill.n; i := !i + j;
   rep :=  evolution bill;
   Graphics.auto_synchronize false;
   draw_billard bill;
   Graphics.auto_synchronize true;
 done;
+next_turn bill.barre;
 !rep;;
 (* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. 
 Renvoie true si la boule d'indice 0 a été supprimée au cours de ce lancer. *)
@@ -35,7 +45,7 @@ if l = [] then failwith "Ce serait mieux d'avoir des boules à placer dans le bi
 else begin
   let r = (List.hd l).r in
   let xm = float_of_int (Graphics.size_x())
-  and ym = float_of_int (Graphics.size_y()) in
+  and ym = float_of_int (Graphics.size_y()-40) in
   let trou1 = {o={x=0.;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
   and trou2 = {o={x=xm;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
   and trou3 = {o={x=0.;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
@@ -43,9 +53,11 @@ else begin
   and trou5 = {o={x=xm/.2.;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
   and trou6 = {o={x=xm/.2.;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let trous = [|trou1; trou2; trou3; trou4; trou5; trou6|] in
+  let close = {o={x=xm-.20.;y=ym+.20.}; r=10.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
+  let barre = {j1 = (true,0); j2 = (false,0); close = close} in
   let m = Array.of_list l in
   let n = Array.length m in
-  let bill = {boules = m; n=n; f = 0.995; trous=trous} in
+  let bill = {boules = m; n=n; f = 0.995; trous=trous; barre=barre} in
 (*
   let l = ref [] in
   for i = 1 to n-1 do for j=0 to i-1 do

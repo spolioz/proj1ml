@@ -2,6 +2,7 @@ open Vecteur;;
 open Billard;;
 open Boule;;
 open Trou;;
+open Barre;;
 
 
 let reset() = Graphics.set_color Graphics.black;
@@ -15,7 +16,8 @@ let rose = Graphics.rgb 255 100 100;;
 let bordeau = Graphics.rgb 200 0 0;;
 let gris = Graphics.rgb 200 200 200;;
 let vert = Graphics.rgb 13 191 49;;
-let marron = Graphics.rgb 88 41 0;;
+let marron_fonce = Graphics.rgb 88 41 0;;
+let marron_clair = Graphics.rgb 189 95 0;;
 
 let traduce_color n = 
   let b = n mod 256 in
@@ -56,9 +58,24 @@ degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Grap
 (* Pour dessiner la boule blanche dans la fenêtre graphique. *)
 
 let draw_trou b = 
-degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.black marron;;
+degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.black marron_fonce;;
 (*Graphics.set_color Graphics.black; 
 Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;*)
+
+let draw_barre barre =
+  let xm = Graphics.size_x() and ym = Graphics.size_y() in
+degrade 0 xm (ym-40) ym marron_fonce marron_clair;
+  let color1 = if fst barre.j2 then Graphics.red else Graphics.blue
+  and color2 = if fst barre.j2 then Graphics.blue else Graphics.red in
+Graphics.set_color color1;
+Graphics.moveto 20 (ym - 25);
+Graphics.draw_string ("Joueur 1 : "^(string_of_int (snd barre.j1)));
+Graphics.set_color color2;
+Graphics.moveto 160 (ym - 25);
+Graphics.draw_string ("Joueur 2 : "^(string_of_int (snd barre.j2)));
+draw_boule barre.close;;
+(* On affiche le joueur dont c'est le tour en bleu, et l'autre en rouge. *)
+
 let clear_boule b = Graphics.set_color Graphics.white; 
 Graphics.fill_circle(int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;
 (* Pour effacer une boule de la fenêtre graphique. *)
@@ -73,6 +90,7 @@ Graphics.fill_rect 0 0 xm ym;
 let n1 = Array.length bill.trous in
 for i = 0 to n1-1 do 
   draw_trou bill.trous.(i) done;
+draw_barre bill.barre;
 for i = 1 to n-1 do
   draw_boule m.(i) 
 done;

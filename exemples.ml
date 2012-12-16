@@ -1,6 +1,7 @@
 open Vecteur;;
 open Boule;;
 open Trou;;
+open Barre;;
 open Billard;;
 open Graphique;;
 open Lancement;;
@@ -28,10 +29,10 @@ let trou1 = {o={x=0.;y=0.}; r=50.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
 let trou2 = {o={x=float_of_int (Graphics.size_x());y=0.}; r=50.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
 let trou3 = {o={x=float_of_int (Graphics.size_x());y=float_of_int (Graphics.size_y())}; r=50.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
 let trou4 = {o={x=0.;y=float_of_int (Graphics.size_y())}; r=50.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
-
+(*
 let m = {boules = [|b1;b2;b3|]; n=3; f=0.999; trous = [|trou1; trou2; trou3; trou4|]};;
-
-let l = make_triangle_boule 40 10.;;
+*)
+let l = make_triangle_boule 10 10.;;
 
 let m = make_billard l;;
 
