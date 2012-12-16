@@ -3,6 +3,7 @@ open Billard;;
 open Boule;;
 open Trou;;
 open Barre;;
+open Bouton;;
 
 
 let reset() = Graphics.set_color Graphics.black;
@@ -109,3 +110,28 @@ done;
 draw_boule0 m.(0)
 ;;
 (* Pour dessiner la configuration actuelle d'un billard dans la fenêtre graphique. *)
+
+let draw_bouton bout = 
+degrade bout.xmin bout.xmax bout.ymin bout.ymax gris Graphics.white;
+Graphics.set_color Graphics.black;
+Graphics.draw_rect bout.xmin bout.ymin (bout.xmax-bout.xmin) (bout.ymax-bout.ymin);
+Graphics.moveto (bout.xmin + 10) ((bout.ymin + bout.ymax)/2 - 5);
+Graphics.draw_string bout.s;;
+
+let draw_result barre =   
+  let xm = Graphics.size_x() 
+  and ym = Graphics.size_y() in
+degrade (xm/2 - 140) (xm/2 + 140) (ym/2 - 40) (ym/2 + 40) Graphics.white gris;
+  let (a,x) = barre.j1 and (b,y) = barre.j2 in
+  let i = if x>y then string_of_int 1 else if x<y then string_of_int 2 else "" in
+(* i est le numéro du joueur gagnant, ou "" s'il y a égalité *)
+Graphics.moveto (xm/2 - 120) (ym/2 + 20);
+Graphics.set_color Graphics.black;
+if i <> "" then  Graphics.draw_string ("Joueur "^i^" a gagne! Voulez-vous rejouer?")
+else Graphics.draw_string ("Egalite! Voulez-vous rejouer?");
+let bout_oui = {xmin = xm/2 - 80 ; xmax = xm/2 - 40 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "OUI"}
+and bout_non = {xmin = xm/2 + 40 ; xmax = xm/2 + 80 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "NON"} in
+draw_bouton bout_oui; draw_bouton bout_non;
+while not (select_bouton bout_oui || select_bouton bout_non) do quit_maybe barre done;
+select_bouton bout_oui;;
+(* Dessine le cadre de résultat. Renvoie true si l'utilisateur veut rejouer, false sinon. *)

@@ -73,12 +73,14 @@ else
 end;;
 
 
-let partie bill =
+let rec partie bill =
   let b = copy_boule bill.boules.(0) in
 try (
   while bill.n > 1 do
     quit_maybe bill.barre;
     lance_boule bill;
     if launch bill then (insert_boule b bill; place_boule bill) 
-  done )
+  done;
+  if draw_result bill.barre then partie bill else Graphics.close_graph()
+)
 with Close -> Graphics.close_graph();;
