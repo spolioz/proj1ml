@@ -9,8 +9,10 @@ let intersect_boule (x,y) b = carre (b.o.x -. (float_of_int x)) +. carre (b.o.y 
 type barre = {mutable j1 : bool * int; mutable j2 : bool * int; close : boule};;
 (* j1 et j2 contiennent les informations concernant les joueurs 1 et 2. Le booléen indique si le tour concerne le joueur concerné, l'entier indique le score du joueur. close est un bouton permettant de fermer le billard. *)
 
-let quit_maybe barre = if (Graphics.button_down() && intersect_boule (Graphics.mouse_pos()) barre.close) then Graphics.close_graph();;
-(* Ferme la fenêtre graphique quand l'utilisateur appuie sur le bouton close. *)
+exception Close;;
+let quit_maybe barre = if (Graphics.button_down() && intersect_boule (Graphics.mouse_pos()) barre.close) then raise Close
+  else ();;
+(* Renvoie l'exception Close quand l'utilisateur appuie sur le bouton close. *)
 
 let next_turn barre = let (a,x) = barre.j1 and (b,y) = barre.j2 in
 barre.j1 <- (not a, x); barre.j2 <- (not b, y);;

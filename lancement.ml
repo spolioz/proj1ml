@@ -14,8 +14,11 @@ let launch bill =
 draw_billard bill;
 while (not !rep && vit_max bill > 30. && bill.n > 1) do
   quit_maybe bill.barre;
+(* Si on a cliqué sur le bouton close, on ferme tout *)
   let j = !nb - bill.n in
-  incr_score (bill.barre) (j*(!nb+1 + !nb+j)*50);
+(* On compte le nombre de boules supprimées au cours de la dernière évolution *)
+  incr_score (bill.barre) (j*(!i+1 + !i+j)*50);
+(* On incrémente le score du joueur en fonction : 100 points pour la première boule rentrée, 200 pour la suivant, etc... *)
   nb := bill.n; i := !i + j;
   rep :=  evolution bill;
   Graphics.auto_synchronize false;
