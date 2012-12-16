@@ -32,10 +32,10 @@ let trou4 = {o={x=0.;y=float_of_int (Graphics.size_y())}; r=50.; m=0.; v ={x=0.;
 (*
 let m = {boules = [|b1;b2;b3|]; n=3; f=0.999; trous = [|trou1; trou2; trou3; trou4|]};;
 *)
-let l = make_triangle_boule 1 10.;;
+let l = make_triangle_boule 2 20.;;
 
 let m = make_billard l;;
 
 let t = quadtree_create l;;
 
-partie m;;
+partie();;

@@ -11,6 +11,6 @@ let tombe_trou b trou = distance b trou < (trou.r -. b.r);;
 let interaction_trou b trou = 
   let u = vect_dir b trou in
   let d = (trou.r -. (distance b trou))/.trou.r in
-  let a = 50000.*. d *. sqrt (1. -. (carre d)) in
+  let a = 100000.*. d *. sqrt (1. -. (carre d)) in
 b.a <- mult_scalaire a u;;
 (* Fait subir l'attraction d'un trou à une boule. *)

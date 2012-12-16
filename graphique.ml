@@ -132,6 +132,8 @@ else Graphics.draw_string ("Egalite! Voulez-vous rejouer?");
 let bout_oui = {xmin = xm/2 - 80 ; xmax = xm/2 - 40 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "OUI"}
 and bout_non = {xmin = xm/2 + 40 ; xmax = xm/2 + 80 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "NON"} in
 draw_bouton bout_oui; draw_bouton bout_non;
-while not (select_bouton bout_oui || select_bouton bout_non) do quit_maybe barre done;
-select_bouton bout_oui;;
-(* Dessine le cadre de résultat. Renvoie true si l'utilisateur veut rejouer, false sinon. *)
+while not (select_bouton bout_oui) do
+  quit_maybe barre; 
+  if select_bouton bout_non then raise Close
+done;;
+(* Dessine le cadre de résultat. Renvoie l'exception Close si l'utilisateur a répondu NON, ou s'il a cliqué sur le bouton close. *)
