@@ -14,6 +14,7 @@ let random_color() = Graphics.rgb (Random.int 255) (Random.int 255) (Random.int 
 
 let rose = Graphics.rgb 255 100 100;;
 let bordeau = Graphics.rgb 200 0 0;;
+let orange = Graphics.rgb 255 125 0;;
 let gris = Graphics.rgb 200 200 200;;
 let vert = Graphics.rgb 13 191 49;;
 let marron_fonce = Graphics.rgb 88 41 0;;
@@ -62,6 +63,17 @@ degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Grap
 (*Graphics.set_color Graphics.black; 
 Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;*)
 
+let draw_close close = 
+degrade_circle (int_of_float close.o.x) (int_of_float close.o.y) (int_of_float close.r) Graphics.red orange;
+Graphics.set_color Graphics.black;
+let x = close.r *. sqrt(2.) *. 0.4 in
+let a1 = add_vect close.o {x = x; y = x}
+and a2 = add_vect close.o {x = -.x; y = -.x}
+and a3 = add_vect close.o {x = -.x; y = x}
+and a4 = add_vect close.o {x = x; y = -.x} in
+Graphics.draw_segments [|(int_of_float a1.x,int_of_float a1.y,int_of_float a2.x,int_of_float a2.y); (int_of_float a3.x,int_of_float a3.y,int_of_float a4.x,int_of_float a4.y)|];;
+
+
 let draw_barre barre =
   let xm = Graphics.size_x() and ym = Graphics.size_y() in
 degrade 0 xm (ym-40) ym marron_fonce marron_clair;
@@ -73,7 +85,7 @@ Graphics.draw_string ("Joueur 1 : "^(string_of_int (snd barre.j1)));
 Graphics.set_color color2;
 Graphics.moveto 160 (ym - 25);
 Graphics.draw_string ("Joueur 2 : "^(string_of_int (snd barre.j2)));
-draw_boule barre.close;;
+draw_close barre.close;;
 (* On affiche le joueur dont c'est le tour en bleu, et l'autre en rouge. *)
 
 let clear_boule b = Graphics.set_color Graphics.white; 

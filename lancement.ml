@@ -56,7 +56,7 @@ else begin
   and trou5 = {o={x=xm/.2.;y=0.}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}}
   and trou6 = {o={x=xm/.2.;y=ym}; r=r*.3.3; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let trous = [|trou1; trou2; trou3; trou4; trou5; trou6|] in
-  let close = {o={x=xm-.20.;y=ym+.20.}; r=10.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
+  let close = {o={x=xm-.20.;y=ym+.20.}; r=8.; m=0.; v ={x=0.;y=0.}; a = {x=0.; y=0.}} in
   let barre = {j1 = (true,0); j2 = (false,0); close = close} in
   let m = Array.of_list l in
   let n = Array.length m in
