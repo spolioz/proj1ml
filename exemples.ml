@@ -37,8 +37,9 @@ let l = make_triangle_boule 10 20.;;
 let m = make_billard l;;
 
 let t = quadtree_create l;;
-
+(*
 m.boules.(0).v.x <- 4000.;;
 launch m;;
+*)
 
 partie();;

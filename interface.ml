@@ -55,7 +55,8 @@ let rec place_boule bill =
 while not (Graphics.button_down()) do
   let x,y = Graphics.mouse_pos() in
   if (Sys.time() -. !t) > 0.01 then begin
-    b.o.x <- (float_of_int x); b.o.y <- (float_of_int y);
+    if y < Graphics.size_y()-40-(int_of_float b.r) then b.o.y <- (float_of_int y) else  b.o.y <- (float_of_int (Graphics.size_y()-40) -. b.r);
+    b.o.x <- (float_of_int x);
     Graphics.auto_synchronize false;
     draw_billard bill;
     Graphics.auto_synchronize true; 
