@@ -21,7 +21,7 @@ let vect_dir b1 b2 = let d = distance b1 b2 in
 {x = (b2.o.x -. b1.o.x) /. d ; y = (b2.o.y -. b1.o.y) /. d};;
 (* Renvoie le vecteur directeur unitaire qui relie deux boules. *)
 
-let contact b1 b2 = distance b1 b2 <= (b1.r +. b2.r);;
+let contact b1 b2 = distance b1 b2 < (b1.r +. b2.r);;
 (* Détermine si oui ou non deux boules sont en contact strict. *)
 
 let contact_triple b1 b2 b3 = 
@@ -42,10 +42,11 @@ selon leur vitesse, sans prendre en compte les collisions. *)
 let separe b1 b2 = 
   let bary = mult_scalaire (1./.(b1.r +. b2.r)) (add_vect (mult_scalaire b2.r b1.o) (mult_scalaire b1.r b2.o)) in
   let u = vect_dir b1 b2 in
-b1.o <- add_vect bary (mult_scalaire (-. b1.r *. 1.01) u);
-b2.o <- add_vect bary (mult_scalaire (b2.r *. 1.01) u);;
+b1.o <- add_vect bary (mult_scalaire (-. b1.r) u);
+b2.o <- add_vect bary (mult_scalaire (b2.r) u);;
 (* Utilisée dans le cas de boule qui s'intersectent, cette fonction les sépare
-en les translant selon leur vecteur directeur, de sorte qu'elle soient presque en contact. Le centre de masse des deux boules reste inchangé. *)
+en les translant selon leur vecteur directeur, de sorte qu'elle soient juste en
+contact. Le centre de masse des deux boules reste inchangé. *)
 
 let collision b1 b2 = 
 separe b1 b2;

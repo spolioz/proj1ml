@@ -107,6 +107,6 @@ let make_triangle_boule n r =
     else aux (i-1) ((make_rangee_boule (xm -. 5.*.r -. (float_of_int i)*.(sqrt 3.)*.r) (n-i) r) @ l) in
 {o={x=5.*.r; y=ym/.2.}; r=r*.0.8; m=1000.; v={x=0.; y=0.}; a={x=0.; y=0.}}::(aux n []);;
 
-let initialise() = let l = make_triangle_boule 5 20. in
+let initialise() = let l = make_triangle_boule 8 20. in
 make_billard l;;
 (* Initialise un billard prêt pour une nouvelle partie. *)
