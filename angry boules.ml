@@ -1,4 +1,6 @@
-#load "graphics.cma";;
+open Graphics;;
+open Vecteur;;
+
 Graphics.open_graph "";;
 
 let g = -.1000.;;
@@ -10,18 +12,10 @@ let f1 = 0.995 ;;
 let dt = 0.01 ;;
 (* dt sera la frame choisie pour l'affichage séquentiel. *)
 
-type vect = {mutable x : float; mutable y : float};;
-(*un vecteur permettra de définir un point, un vitesse, une accélération, ...*)
-
 type boule = {mutable o : vect; r : float; mutable s : float; mutable v : vect; mutable a : vect;};;
 (* On repère une boule par son centre o, son rayon r, sa solidité s, sa vitesse v, et son accélération a. *)
 
-let b1 = {o={x=200.;y=60.}; r=20.; s=8000.; v ={x=Random.float 3000. ;y=Random.float 3000.}; a = {x=0.; y=0.}};;
-let b2 = {o={x=180.;y=180.}; r=20.; s=125000.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
-let b3 = {o={x=300.;y=300.}; r=20.; s=125000.; v ={x=0.;y=0.}; a = {x=0.; y=0.}};;
 type niveau = {boules : boule array; mutable n : int};;
-let m = {boules = [|b1;b2;b3|]; n=3};;
-(* L'exemple sur lequel on testera nos fonctions *)
 
 let swap_tab i j tab = let x = tab.(j) in tab.(j) <- tab.(i); tab.(i) <- x;;
 let supprime_boule i niv = let n = niv.n in
@@ -92,10 +86,10 @@ separe b1 b2;
 b2.v <- add_vect b2.v dv;
 b1.v <- sous_vect b1.v dv;
 reaction_support b1 b2;
-if ds > 100. then begin
+(*if ds > 300. then begin
 b2.s <- b2.s -. ds;
 b1.s <- b1.s -. ds
-end;;
+end*);;
 (* Gère la collision entre deux boules (uniquement si elles sont en contact!) *)
 
 let is_destroyed b = 
@@ -112,7 +106,9 @@ else Nil;;
 et sinon la direction dans laquelle elle commence à sortir du billard. *)
 
 let ricochet b dir = match dir with
-  |Bas -> b.v.y <- -. b.v.y; b.o.y <- b.r; b.s <- b.s -. 0.2*.(abs_float b.v.y); b.a.y <- 0.
+  |Bas -> b.v.y <- -. b.v.y; b.o.y <- b.r;
+(*    let ds = 0.2 *. (abs_float b.v.y) in if ds > 300. then  b.s <- b.s -. ds;*)
+    b.a.y <- 0.
   |_ -> ();;
 (* Gère le rebond sur un bord de la fenêtre graphique (= du billard), 
 en fonction de la direction d'échappement. *)
@@ -189,7 +185,7 @@ while (vit_max niv >= 30. && niv.n > 0) do
   evolution niv;
   Graphics.auto_synchronize false;
   draw_niveau niv;
-  Graphics.auto_synchronize true;draw_niveau niv
+  Graphics.auto_synchronize true;
 done;;
 (* Lance et affiche l'évolution du billard, tant que la vitesse des boules reste raisonnable. *)
 
@@ -238,8 +234,9 @@ let make_triangle_boule n r =
 let l = make_triangle_boule 6 20.;;
 
 let m = make_niveau l;;
-while m.n > 0 do
-m.boules.(0).v.x <- (Random.float 1000.);
-m.boules.(0).v.y <- (Random.float 1000.);
-launch m done;;
+
+m.boules.(0).v.x <- (Random.float 10.);;
+m.boules.(0).v.y <- (Random.float 1000.);;
+
+
 launch m;;
