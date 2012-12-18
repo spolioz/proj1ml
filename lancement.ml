@@ -72,19 +72,6 @@ else begin
   let m = Array.of_list l in
   let n = Array.length m in
   let bill = {boules = m; n=n; f = 0.995; trous=trous; barre=barre} in
-(*
-  let l = ref [] in
-  for i = 1 to n-1 do for j=0 to i-1 do
-    if contact m.(i) m.(j) then l:= (i,j) :: (!l)
-  done done;
-  while !l <> [] do
-    List.iter (fun (i,j) -> separe m.(i) m.(j)) (!l);
-    l:=[];
-    for i = 1 to n-1 do for j=0 to i-1 do
-      if contact m.(i) m.(j) then l:= (i,j) :: !l 
-    done done;
-  done;
-*)
 draw_billard bill;
 bill
 end;;
@@ -107,6 +94,6 @@ let make_triangle_boule n r =
     else aux (i-1) ((make_rangee_boule (xm -. 5.*.r -. (float_of_int i)*.(sqrt 3.)*.r) (n-i) r) @ l) in
 {o={x=5.*.r; y=ym/.2.}; r=r*.0.8; m=1000.; v={x=0.; y=0.}; a={x=0.; y=0.}}::(aux n []);;
 
-let initialise() = let l = make_triangle_boule 8 20. in
+let initialise() = let l = make_triangle_boule 20 10. in
 make_billard l;;
 (* Initialise un billard prêt pour une nouvelle partie. *)

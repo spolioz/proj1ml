@@ -1,13 +1,17 @@
 open Vecteur;;
 open Boule2;;
 open Graphics;;
-open Barre;;
+open Barre2;;
 
-type niveau = {boules : boule array; mutable n : int; barre : barre};;
+type niveau = {boules : boule2 array; mutable n : int; barre : barre};;
 
 let swap_tab i j tab = let x = tab.(j) in tab.(j) <- tab.(i); tab.(i) <- x;;
 let supprime_boule i niv = let n = niv.n in
 swap_tab i (n-1) (niv.boules); niv.n <- n-1;;
+
+let exists_contact b niv = let i = ref 0 in 
+while (!i < niv.n && not (contact b niv.boules.(!i))) do incr i done;
+!i < niv.n;;
 
 type direction = Droite | Gauche | Haut | Bas | Nil;;
 

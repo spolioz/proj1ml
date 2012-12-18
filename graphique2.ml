@@ -1,8 +1,7 @@
 open Vecteur;;
-open Billard;;
-open Boule;;
-open Trou;;
-open Barre;;
+open Niveau;;
+open Boule2;;
+open Barre2;;
 open Bouton;;
 
 
@@ -60,11 +59,6 @@ let draw_boule0 b =
 degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.white gris;;
 (* Pour dessiner la boule blanche dans la fenêtre graphique. *)
 
-let draw_trou b = 
-degrade_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r) Graphics.black marron_fonce;;
-(*Graphics.set_color Graphics.black; 
-Graphics.fill_circle (int_of_float b.o.x) (int_of_float b.o.y) (int_of_float b.r);;*)
-
 let draw_close close = 
 degrade_circle (int_of_float close.o.x) (int_of_float close.o.y) (int_of_float close.r) Graphics.red orange;
 Graphics.set_color Graphics.black;
@@ -84,61 +78,23 @@ Graphics.draw_string "R";;
 let draw_barre barre =
   let xm = Graphics.size_x() and ym = Graphics.size_y() in
 degrade 0 xm (ym-40) ym marron_fonce marron_clair;
-  let color1 = if fst barre.j2 then Graphics.red else Graphics.blue
-  and color2 = if fst barre.j2 then Graphics.blue else Graphics.red in
-Graphics.set_color color1;
+Graphics.set_color Graphics.red;
 Graphics.moveto 20 (ym - 25);
 Graphics.draw_string ("Joueur 1 : "^(string_of_int (snd barre.j1)));
-Graphics.set_color color2;
-Graphics.moveto 160 (ym - 25);
-Graphics.draw_string ("Joueur 2 : "^(string_of_int (snd barre.j2)));
 draw_reset barre.reset;
 draw_close barre.close;;
 (* On affiche le joueur dont c'est le tour en bleu, et l'autre en rouge. *)
 
-
-let draw_billard bill = 
+let draw_niveau niv = 
   let xm = Graphics.size_x() 
   and ym = Graphics.size_y() in
-  let m = bill.boules in
-  let n = bill.n in
+  let m = niv.boules in
+  let n = niv.n in
 reset();
-Graphics.set_color vert;
-Graphics.fill_rect 0 0 xm ym;
-let n1 = Array.length bill.trous in
-for i = 0 to n1-1 do 
-  draw_trou bill.trous.(i) done;
-draw_barre bill.barre;
+degrade 0 xm 0 ym Graphics.blue ciel;
+draw_barre niv.barre;
 for i = 1 to n-1 do
-  draw_boule m.(i) 
-done;
+  draw_boule m.(i) done;
 draw_boule0 m.(0)
 ;;
-(* Pour dessiner la configuration actuelle d'un billard dans la fenêtre graphique. *)
-
-let draw_bouton bout = 
-degrade bout.xmin bout.xmax bout.ymin bout.ymax gris Graphics.white;
-Graphics.set_color Graphics.black;
-Graphics.draw_rect bout.xmin bout.ymin (bout.xmax-bout.xmin) (bout.ymax-bout.ymin);
-Graphics.moveto (bout.xmin + 10) ((bout.ymin + bout.ymax)/2 - 5);
-Graphics.draw_string bout.s;;
-
-let draw_result barre =   
-  let xm = Graphics.size_x() 
-  and ym = Graphics.size_y() in
-degrade (xm/2 - 140) (xm/2 + 140) (ym/2 - 40) (ym/2 + 40) Graphics.white gris;
-  let (a,x) = barre.j1 and (b,y) = barre.j2 in
-  let i = if x>y then string_of_int 1 else if x<y then string_of_int 2 else "" in
-(* i est le numéro du joueur gagnant, ou "" s'il y a égalité *)
-Graphics.moveto (xm/2 - 120) (ym/2 + 20);
-Graphics.set_color Graphics.black;
-if i <> "" then  Graphics.draw_string ("Joueur "^i^" a gagne! Voulez-vous rejouer?")
-else Graphics.draw_string ("Egalite! Voulez-vous rejouer?");
-let bout_oui = {xmin = xm/2 - 80 ; xmax = xm/2 - 40 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "OUI"}
-and bout_non = {xmin = xm/2 + 40 ; xmax = xm/2 + 80 ; ymin = ym/2 - 20 ; ymax = ym/2; s = "NON"} in
-draw_bouton bout_oui; draw_bouton bout_non;
-while not (select_bouton bout_oui) do
-  quit_maybe barre; 
-  if select_bouton bout_non then raise Close
-done;;
-(* Dessine le cadre de résultat. Renvoie l'exception Close si l'utilisateur a répondu NON, ou s'il a cliqué sur le bouton close. *)
+(* Pour dessiner la configuration actuelle d'un niveau dans la fenêtre graphique. *)

@@ -4,8 +4,7 @@ let f1 = 0.995 ;;
 (* On multiplie la vitesse par f1 après chaque instant dt, ce qui traduit les frottements. *)
 let dt = 0.01 ;;
 (* dt sera la frame choisie pour l'affichage séquentiel. *)
-let g = -. 1000.;;
-(* La gravité. *)
+
 
 
 type boule = {mutable o : vect; r : float; m : float; mutable v : vect; mutable a : vect;};;

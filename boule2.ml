@@ -4,19 +4,25 @@ let f1 = 0.995 ;;
 (* On multiplie la vitesse par f1 après chaque instant dt, ce qui traduit les frottements. *)
 let dt = 0.01 ;;
 (* dt sera la frame choisie pour l'affichage séquentiel. *)
+let g = -. 1000.;;
+(* La gravité. *)
 
 type boule2 = {mutable o : vect; r : float; mutable s : float; mutable v : vect; mutable a : vect;};;
 (* On repère une boule par son centre o, son rayon r, sa solidité s, sa vitesse v, et son accélération a. *)
 
-let vitesse b1 = sqrt (carre b1.v.x +. carre b1.v.y);;
+
+let distance b1 b2 = norme (sous_vect b2.o b1.o);;
+(* Donne la distance entre les centres de deux boules. *)
+let vitesse b1 = norme b1.v;;
 (* Donne la norme de la vitesse d'une boule. *)
+
+let vect_dir b1 b2 = let d = distance b1 b2 in
+mult_scalaire (1. /. d) (sous_vect b2.o b1.o);;
+(* Renvoie le vecteur directeur unitaire qui relie deux boules. *)
+
 
 let contact b1 b2 = b1<>b2 && distance b1 b2 < (b1.r +. b2.r);;
 (* Détermine si oui ou non deux boules sont en contact strict. *)
-
-let exists_contact b niv = let i = ref 0 in 
-while (!i < niv.n && not (contact b niv.boules.(!i))) do incr i done;
-!i < niv.n;;
 
 let evolution_boule b niv =
   let v = norme b.v in
@@ -24,9 +30,8 @@ b.v.x <- b.v.x *. f1 +. (dt *. b.a.x);
 b.v.y <- b.v.y *. f1 +. (dt *. b.a.y);
 b.o.x <- b.o.x +. (dt *. b.v.x);
 b.o.y <- b.o.y +. (dt *. b.v.y);
-b.a.x <- 0. (*-.v*.b.v.x*);
-if not (exists_contact b niv) then b.a.y <- g (*-. v*.b.v.y*)
-;;
+b.a.x <- -.v*.b.v.x;
+b.a.y <- g -. v*.b.v.y;;
 (* Fait avancer les boules durant l'intervalle de temps dt, 
 selon leur vitesse, sans prendre en compte les collisions. *)
 
