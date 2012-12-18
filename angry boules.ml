@@ -73,10 +73,10 @@ b1.o <- add_vect bary (mult_scalaire (-. b1.r) u);
 b2.o <- add_vect bary (mult_scalaire (b2.r) u);;
 
 let reaction_support b1 b2 = 
-if b1.a.y = 0. then 
+if b1.a.y < b2.a.y then 
   let u = vect_dir b1 b2 in
   b2.a <- add_vect b2.a (mult_scalaire (scalaire b2.a u) u)
-else if b2.a.y = 0. then
+else
   let u = vect_dir b2 b1 in
   b1.a <- add_vect b1.a (mult_scalaire (scalaire b1.a u) u);;
 (* Traduit la compensation de l'accélération d'une boule selon la 
