@@ -6,7 +6,8 @@ all:
 	ocamlc -a graphics.cma bouton.ml -o bouton.cma
 	ocamlc -a bouton.cma niveau.cma graphique2.ml -o graphique2.cma
 	ocamlc -a graphique2.cma lancement2.ml -o lancement2.cma
-	ocamlc lancement2.cma exemples.ml -o exemples.exe
+	ocamlc -a lancement2.cma interface2.ml -o interface2.cma
+	ocamlc interface2.cma exemples.ml -o exemples.exe
 
 clean:
 	rm -rf *.cmi *.cmo *.cma *~

@@ -10,6 +10,7 @@ let g = -. 1000.;;
 type boule2 = {mutable o : vect; r : float; mutable s : float; mutable v : vect; mutable a : vect;};;
 (* On repère une boule par son centre o, son rayon r, sa solidité s, sa vitesse v, et son accélération a. *)
 
+let copy_boule b = {o = {x = b.o.x; y = b.o.y}; r = b.r; s = b.s; v = {x = b.v.x; y = b.v.y}; a = {x = b.a.x; y = b.a.y};};;
 
 let distance b1 b2 = norme (sous_vect b2.o b1.o);;
 (* Donne la distance entre les centres de deux boules. *)
@@ -21,7 +22,7 @@ mult_scalaire (1. /. d) (sous_vect b2.o b1.o);;
 (* Renvoie le vecteur directeur unitaire qui relie deux boules. *)
 
 
-let contact b1 b2 = b1<>b2 && distance b1 b2 < (b1.r +. b2.r);;
+let contact b1 b2 = b1<>b2 && distance b1 b2 <= (b1.r +. b2.r);;
 (* Détermine si oui ou non deux boules sont en contact strict. *)
 
 let evolution_boule b niv =
@@ -30,8 +31,8 @@ b.v.x <- b.v.x *. f1 +. (dt *. b.a.x);
 b.v.y <- b.v.y *. f1 +. (dt *. b.a.y);
 b.o.x <- b.o.x +. (dt *. b.v.x);
 b.o.y <- b.o.y +. (dt *. b.v.y);
-b.a.x <- -.v*.b.v.x;
-b.a.y <- g -. v*.b.v.y;;
+b.a.x <- 0.(*-.v*.b.v.x*);
+b.a.y <- if b.o.y <= b.r then 0. else g (*-. v*.b.v.y*);;
 (* Fait avancer les boules durant l'intervalle de temps dt, 
 selon leur vitesse, sans prendre en compte les collisions. *)
 
@@ -69,5 +70,5 @@ end;;
 
 let is_destroyed b = 
   let xm = float_of_int (Graphics.size_x()) in
-b.s <= 0. || b.o.x < -.b.r || b.o.x > b.r +. xm;;
+b.s <> infinity && (b.s <= 0. || b.o.x < -.b.r || b.o.x > b.r +. xm);;
 (* Indique si oui ou non une boule a été détruite *)

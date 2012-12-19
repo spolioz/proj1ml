@@ -19,6 +19,7 @@ while (vit_max niv > 30. && niv.n > 1) do
   incr_score (niv.barre) (j*(!i+1 + !i+j)*50);
 (* On incrémente le score du joueur en fonction : 100 points pour la première boule rentrée, 200 pour la suivant, etc... *)
   nb := niv.n; i := !i + j;
+  evolution niv;
   Graphics.auto_synchronize false;
   draw_niveau niv;
   Graphics.auto_synchronize true;
@@ -71,3 +72,7 @@ else begin
 draw_niveau niv;
 niv
 end;;
+
+let initialise () = 
+  let l = make_triangle_boule 8 20. in
+make_niveau l;;
