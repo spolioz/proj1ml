@@ -12,6 +12,10 @@ let launch niv =
 (* i représente le nombre de boules supprimées pendant le tour *) 
 draw_niveau niv;
 while (niv.n > 1 && (vit_max niv > 40. || not (Graphics.button_down()))) do
+(* On autorise le changement de tour quand la vitesse des boules est suffisamment
+faible, auquel cas on le propose à l'utilisateur, qui clique pour passer au
+tour suivant. On arrête sans rien demander quand il n'y a plus que la boule
+projectile dans le niveau. *)
   reset_maybe niv.barre;
   quit_maybe niv.barre;
 (* Si on a cliqué sur le bouton close, on ferme tout, ou reset, et on recommence tout. *)
@@ -28,8 +32,9 @@ while (niv.n > 1 && (vit_max niv > 40. || not (Graphics.button_down()))) do
     Graphics.moveto (Graphics.size_x()/2) (Graphics.size_y()/2);
     Graphics.set_color Graphics.red;
     Graphics.draw_string "NEXT TURN OK : CLICK TO PASS"
+(* Affichage de la proposition de passage au tour suivant lorsque les conditions
+le permettent. *)
   end;
-(* On indique au joueur qu'il peut cliquer s'il veut passer au tour suivant *)
   Graphics.auto_synchronize true;
 done;
 let j = !nb - niv.n in
@@ -39,7 +44,7 @@ Graphics.auto_synchronize false;
 draw_niveau niv;
 (* On redessine le niveau pour que le changement de score s'affiche. *)
 Graphics.auto_synchronize true;;
-(* Lance et affiche l'évolution du niveau, tant que la vitesse des boules reste raisonnable. *)
+(* Lance et affiche l'évolution du niveau, tant que la vitesse des boules reste raisonnable. Alors, l'utilisateur peut passer au tour suivant en cliquant. *)
 
 let random_boule r = 
   let xm = float_of_int (Graphics.size_x())

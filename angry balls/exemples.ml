@@ -6,7 +6,7 @@ open Graphique2;;
 open Lancement2;;
 open Niveau;;
 open Interface2;;
-
+open Partie;;
 
 
 let l = make_triangle_boule 8 20.;;
