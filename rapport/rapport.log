@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.27)  11 JAN 2013 16:44
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.10.18)  11 JAN 2013 17:27
 entering extended mode
  %&-line parsing enabled.
 **rapport.tex
@@ -531,39 +531,53 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 120.
 (/usr/share/texmf-texlive/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 ) [3]
-<schema.png, id=23, 670.00313pt x 546.54187pt>
+<schema4.png, id=23, 442.65375pt x 292.84406pt>
+File: schema4.png Graphic file (type png)
+ <use schema4.png>
+<schema2.png, id=25, 563.85657pt x 563.85657pt>
+File: schema2.png Graphic file (type png)
+ <use schema2.png>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[4 <./schema4.png>] <schema.png, id=32, 670.00313pt x 546.54187pt>
 File: schema.png Graphic file (type png)
- <use schema.png>
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+<use schema.png>
 
-[4] [5 <./schema.png>] [6] [7] [8] [9] (./rapport.aux) ) 
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5 <./schema2.png (PNG copy)>] [6 <./schema.png>] [7] [8] [9] [10]
+<screen.png, id=56, 1830.84pt x 584.1825pt>
+File: screen.png Graphic file (type png)
+ <use screen.png> [11 <./screen.png>] [12] (./rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 4386 strings out of 495061
- 53630 string characters out of 1182621
- 142207 words of memory out of 3000000
- 7498 multiletter control sequences out of 15000+50000
+ 4405 strings out of 495061
+ 53897 string characters out of 1182620
+ 142206 words of memory out of 3000000
+ 7514 multiletter control sequences out of 15000+50000
  19057 words of font info for 52 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 27i,7n,24p,266b,231s stack positions out of 5000i,500n,10000p,200000b,50000s
- </home/fpirot/.texmf-v
-ar/fonts/pk/ljfour/jknappen/ec/eccc1095.600pk> </home/fpirot/.texmf-var/fonts/p
-k/ljfour/jknappen/ec/ectt1095.600pk> </home/fpirot/.texmf-var/fonts/pk/ljfour/j
-knappen/ec/ecbx1200.600pk> </home/fpirot/.texmf-var/fonts/pk/ljfour/jknappen/ec
-/ecrm1095.600pk> </home/fpirot/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.
-600pk> </home/fpirot/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </h
-ome/fpirot/.texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1200.600pk> </home/fpirot
-/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/fpirot/.texmf-va
-r/fonts/pk/ljfour/jknappen/ec/ecrm1728.600pk></usr/share/texmf-texlive/fonts/ty
-pe1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/
-amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
-/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></
-usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/t
-exmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive
-/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on rapport.pdf (9 pages, 228538 bytes).
+ 27i,7n,24p,266b,256s stack positions out of 5000i,500n,10000p,200000b,50000s
+ </home/user/.texmf
+-var/fonts/pk/ljfour/jknappen/ec/eccc1095.600pk> </home/user/.texmf-var/fonts/p
+k/ljfour/jknappen/ec/ectt1095.600pk> </home/user/.texmf-var/fonts/pk/ljfour/jkn
+appen/ec/ecbx1200.600pk> </home/user/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecr
+m1095.600pk> </home/user/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk>
+ </home/user/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/user
+/.texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1200.600pk> </home/user/.texmf-var/
+fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/user/.texmf-var/fonts/pk/ljf
+our/jknappen/ec/ecrm1728.600pk></usr/share/texmf-texlive/fonts/type1/public/ams
+fonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
+mi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/p
+ublic/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
+ts/symbols/msam10.pfb>
+Output written on rapport.pdf (12 pages, 367145 bytes).
 PDF statistics:
- 344 PDF objects out of 1000 (max. 8388607)
+ 380 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

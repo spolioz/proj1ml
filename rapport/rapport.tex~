@@ -429,7 +429,7 @@ dans Angry Balls, voulant représenter le ciel.
 
 \begin{figure}[!h]
 \caption{Rendus visuels pour le billard et un niveau de Angry Balls}
-\center{\includegraphics[scale = 0.26]{screen.png}}
+\center{\includegraphics[scale = 0.25]{screen.png}}
 \end{figure}
 
 Lorsque plusieurs éléments peuvent se superposer - ce qui arrive notamment dans le billard : les boules peuvent

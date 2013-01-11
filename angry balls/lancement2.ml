@@ -29,7 +29,7 @@ projectile dans le niveau. *)
   Graphics.auto_synchronize false;
   draw_niveau niv;
   if vit_max niv <= 40. then begin
-    Graphics.moveto (Graphics.size_x()/2) (Graphics.size_y()/2);
+    Graphics.moveto (Graphics.size_x()/2 - 50) (Graphics.size_y()/2);
     Graphics.set_color Graphics.red;
     Graphics.draw_string "NEXT TURN OK : CLICK TO PASS"
 (* Affichage de la proposition de passage au tour suivant lorsque les conditions
